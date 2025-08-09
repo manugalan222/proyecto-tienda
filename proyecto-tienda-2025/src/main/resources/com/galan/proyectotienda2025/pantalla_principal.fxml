@@ -9,6 +9,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.layout.Priority?>
 
+<?import javafx.scene.layout.HBox?>
 <BorderPane prefHeight="480.0" prefWidth="800.0" stylesheets="@estilos.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.galan.proyectotienda2025.PantallaControlador">
 
 
@@ -28,9 +29,25 @@
 
     <center>
         <VBox spacing="20.0" styleClass="main-content">
-            <children>
-                <Text text="¡Bienvenido, Nombre!" styleClass="titulo" />
-            </children>
+            <Text text="¡Bienvenido, Nombre!" styleClass="titulo" />
+
+            <HBox spacing="30" alignment="TOP_LEFT">
+                <VBox spacing="10" alignment="CENTER" styleClass="card">
+                    <Text text="Ventas Hoy" styleClass="card-title"/>
+                    <Text text="125" styleClass="card-value"/>
+                </VBox>
+                <VBox spacing="10" alignment="CENTER" styleClass="card">
+                    <Text text="Productos en Stock" styleClass="card-title"/>
+                    <Text text="345" styleClass="card-value"/>
+                </VBox>
+                <VBox spacing="10" alignment="CENTER" styleClass="card">
+                    <Text text="Clientes Activos" styleClass="card-title"/>
+                    <Text text="87" styleClass="card-value"/>
+                </VBox>
+            </HBox>
+
+            <Text text="Últimas ventas" styleClass="subtitulo" />
+
         </VBox>
     </center>
 </BorderPane>

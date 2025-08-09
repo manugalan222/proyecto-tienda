@@ -78,6 +78,22 @@
     -fx-border-width: 2;
 }
 
+/*Text Area... casi igual que los textfield ajaj*/
+
+.text-area{
+    -fx-background-color: #f0f0f0; /* Un gris claro para el fondo */
+    -fx-border-color: #dcdcdc;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 8 10 8 10;
+}
+
+.text-area:focused {
+    -fx-border-color: #3498db; /* Borde azul brillante al enfocar */
+    -fx-border-width: 2;
+}
+
 /* Botones de acción (Añadir, Borrar, etc.) */
 .button {
     -fx-background-color: #3498db;
@@ -107,4 +123,119 @@
     -fx-border-radius: 10;
     -fx-background-radius: 10;
     -fx-cursor: hand; /* para que cambie el cursor cuando pasás por arriba */
+}
+
+/*Combos box */
+.combo-personalizado {
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: #28a745;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 8 12 8 12;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.combo-box {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #007bff;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 5 10 5 10;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+}
+
+.combo-box:hover {
+    -fx-border-color: #0056b3;
+    -fx-background-color: #e6f0ff;
+}
+
+.combo-box:focused {
+    -fx-border-color: #003d80;
+    -fx-background-color: #cce0ff;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.combo-box .arrow {
+    -fx-shape: "M 0 0 L 4 4 L 8 0 Z"; /* Triangulito para la flecha */
+    -fx-background-color: #007bff;
+}
+
+/*Las tablas */
+.table-view {
+    -fx-background-color: #fafafa;
+    -fx-border-color: #c0c7d1; /* borde gris clarito */
+    -fx-border-width: 1.5;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-table-cell-border-color: transparent;
+    -fx-padding: 5;
+    -fx-font-size: 14px;
+    -fx-font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 3,0,0,1);
+}
+
+.table-view .column-header-background {
+    -fx-background-color: linear-gradient(to bottom, #f0f2f7, #d9dee7);
+    -fx-border-radius: 6 6 0 0;
+}
+
+.table-view .column-header,
+.table-view .filler {
+    -fx-size: 30px;
+    -fx-border-color: transparent;
+    -fx-alignment: CENTER_LEFT;
+    -fx-text-fill: #4a4a4a;
+    -fx-font-weight: 600;
+}
+
+.table-view .table-row-cell:filled:selected,
+.table-view .table-row-cell:focused:selected {
+    -fx-background-color: #d0d7f9; /* celeste muy suave */
+}
+
+.table-view .table-row-cell:filled:hover {
+    -fx-background-color: #f5f7ff; /* hover muy clarito */
+}
+
+.table-view .table-cell {
+    -fx-padding: 6 12 6 12;
+    -fx-border-color: transparent;
+}
+
+.table-view:focused {
+    -fx-border-color: #a0a8c0; /* borde gris un poco más oscuro al focus */
+}
+
+/*Estilo para las cards */
+
+.card {
+    -fx-background-color: #e6f0ff;
+    -fx-padding: 20;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10,0,0,2);
+    -fx-min-width: 150px;
+}
+
+.card-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-fill: #003d80;
+}
+
+.card-value {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-fill: #007bff;
+}
+
+.subtitulo {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 0 0 0;
 }

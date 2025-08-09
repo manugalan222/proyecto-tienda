@@ -33,24 +33,14 @@
             <VBox spacing="15" alignment="TOP_CENTER" prefWidth="350">
                 <Text text="Producto" styleClass="titulo" />
 
-                <StackPane prefHeight="220" prefWidth="220" alignment="CENTER" style="-fx-border-color: #ccc; -fx-border-radius: 5;">
-                    <ImageView fx:id="imagenProducto" fitHeight="220" fitWidth="220" preserveRatio="true">
-                        <image>
-                            <Image url="@imagenes/default.png"/>
-                        </image>
-                    </ImageView>
-                </StackPane>
-
-                <Button text="Subir Imagen"  maxWidth="220"/>
-
                 <TextField fx:id="txtProductoId" promptText="ID" maxWidth="Infinity" />
 
-                <ComboBox fx:id="comboEstado" promptText="Estado" maxWidth="Infinity"/>
+                <ComboBox fx:id="comboEstado"  promptText="Estado" maxWidth="Infinity"/>
                 <ComboBox fx:id="comboTipo" promptText="Tipo" maxWidth="Infinity"/>
                 <ComboBox fx:id="comboMarca" promptText="Marca" maxWidth="Infinity"/>
 
                 <TextField fx:id="txtProductoNombre" promptText="Nombre" maxWidth="Infinity" />
-                <TextArea fx:id="txtDescripcion" promptText="Descripción" prefRowCount="4" maxWidth="Infinity"/>
+                <TextArea fx:id="txtDescripcion" promptText="Descripción" prefRowCount="1" maxWidth="Infinity"/>
 
                 <HBox spacing="10" alignment="CENTER_LEFT" maxWidth="Infinity">
                     <Label text="Stock:"/>
@@ -62,12 +52,10 @@
                 <HBox spacing="10" alignment="CENTER" maxWidth="Infinity">
                     <Button text="Añadir" fx:id="btnAnadir" maxWidth="Infinity"/>
                     <Button text="Resetear" fx:id="btnResetear" maxWidth="Infinity" />
-                </HBox>
-
-                <HBox spacing="10" alignment="CENTER" maxWidth="Infinity">
                     <Button text="Borrar" fx:id="btnBorrar" maxWidth="Infinity"/>
                     <Button text="Actualizar" fx:id="btnActualizar" maxWidth="Infinity" />
                 </HBox>
+
             </VBox>
 
             <!-- Derecha: tabla productos -->
