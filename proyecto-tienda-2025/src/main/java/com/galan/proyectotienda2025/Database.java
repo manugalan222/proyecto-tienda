@@ -17,6 +17,7 @@ public class Database {
 
     // Inicializa la base y crea la tabla si no existe
     public static void init() {
+        System.out.println("CREE");
         try (Connection conn = connect();
              Statement stmt = conn.createStatement()) {
 
