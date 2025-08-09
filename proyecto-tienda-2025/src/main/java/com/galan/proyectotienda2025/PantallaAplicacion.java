@@ -10,6 +10,14 @@ import java.io.IOException;
 public class PantallaAplicacion extends Application {
     @Override
     public void start(Stage stage) throws IOException {
+        Database.init();
+
+        //Database.insertarProducto("Remera", 100, 150, "verano", true, "Remera de algodón", "MarcaX", 50);
+        //Database.actualizarProducto(3,"Remera",100,300,"Verano",false, "Remera de algodon", "Nike", 10);
+        //Database.eliminarProducto(3);
+        var productos = Database.listarProductos();
+        productos.forEach(System.out::println);
+
         FXMLLoader fxmlLoader = new FXMLLoader(PantallaAplicacion.class.getResource("pantalla_principal.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 800, 600);
         //scene.getStylesheets().add(PantallaControlador.class.getResource("estilos.css").toExternalForm());
@@ -17,4 +25,5 @@ public class PantallaAplicacion extends Application {
         stage.setScene(scene);
         stage.show();
     }
+
 }

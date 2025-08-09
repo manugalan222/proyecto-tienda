@@ -5,6 +5,7 @@ module com.galan.proyectotienda2025 {
     requires org.controlsfx.controls;
     requires net.synedra.validatorfx;
     requires java.sql;
+    requires com.h2database;
 
     opens com.galan.proyectotienda2025 to javafx.fxml;
     exports com.galan.proyectotienda2025;
