@@ -58,4 +58,18 @@ public class PantallaControlador {
         stage.setScene(new Scene(root,ancho,alto));
         stage.show();
     }
+
+    public void onClienteButtonClick(ActionEvent actionEvent) throws IOException {
+        // Cargo el FXML de productos
+        Parent root = FXMLLoader.load(getClass().getResource("pantalla_clientes.fxml"));
+
+        // Obtengo el Stage actual a partir del evento
+        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        double ancho = stage.getWidth();
+        double alto = stage.getHeight();
+
+        // Cambio la escena
+        stage.setScene(new Scene(root,ancho,alto));
+        stage.show();
+    }
 }

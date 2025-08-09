@@ -13,12 +13,12 @@
 
 
     <left>
-        <VBox id="barra-lateral" spacing="10.0" prefWidth="200.0" styleClass="sidebar" >
+        <VBox id="barra-lateral" spacing="10.0" prefWidth="300.0" styleClass="sidebar" >
             <children>
                 <Button text="Inicio" styleClass="menu-btn" maxWidth="Infinity" onAction="#onInicioButtonClick"/>
                 <Button text="Productos" styleClass="menu-btn" maxWidth="Infinity" onAction="#onProductosButtonClick"/>
                 <Button text="Ventas" styleClass="menu-btn" maxWidth="Infinity" onAction="#onVentaButtonClick"/>
-                <Button text="Clientes" styleClass="menu-btn" maxWidth="Infinity" />
+                <Button text="Clientes" styleClass="menu-btn" maxWidth="Infinity" onAction="#onClienteButtonClick"/>
                 <Button text="Inventario" styleClass="menu-btn" maxWidth="Infinity" onAction="#onInventarioButtonClick"/>
                 <Button text="Corte" styleClass="menu-btn" maxWidth="Infinity" />
                 <Button text="Configuración" styleClass="menu-btn" maxWidth="Infinity" />
