@@ -47,18 +47,31 @@ public class Database {
                 );
             """);
 
-            stmt.execute("""
+            stmt.execute("""    
                 CREATE TABLE IF NOT EXISTS detalle_venta (
                     id IDENTITY PRIMARY KEY,
                     cliente_id BIGINT NOT NULL,
                     producto_id VARCHAR(100) NOT NULL,
-                    cantidad INT NOT NULL,
                     monto_total DECIMAL(10,2) NOT NULL,
+                    saldo_pendiente DECIMAL(10,2) NOT NULL,
+                    es_a_cuotas BOOLEAN NOT NULL,
                     medio_pago VARCHAR(30) NOT NULL,
                     fecha_compra TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (cliente_id) REFERENCES cliente(id),
                     FOREIGN KEY (producto_id) REFERENCES productos(id)
                 );
+                """);
+
+            stmt.execute("""
+                    CREATE TABLE IF NOT EXISTS cuotas (
+                        id IDENTITY PRIMARY KEY,
+                        detalle_venta_id BIGINT NOT NULL,
+                        monto_cuota DECIMAL(10,2) NOT NULL,
+                        fecha_vencimiento DATE,
+                        fecha_pago TIMESTAMP,
+                        estado VARCHAR(20) NOT NULL,
+                        FOREIGN KEY (detalle_venta_id) REFERENCES detalle_venta(id)
+                    );
                 """);
 
             System.out.println("Base de datos inicializada.");
@@ -90,6 +103,70 @@ public class Database {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void registrarVentaEnCuotas(long cliente_id, String producto_id, int cantidad, double monto_total, int numero_cuotas) {
+        Connection conn = null;
+        try {
+            conn = connect();
+            conn.setAutoCommit(false); // Inicia la transacción
+
+            // Paso 1: Insertar en detalle_venta y obtener el ID de la venta
+            String sqlVenta = "INSERT INTO detalle_venta (cliente_id, producto_id, cantidad, monto_total, saldo_pendiente, es_a_cuotas) " +
+                    "VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement pstmtVenta = conn.prepareStatement(sqlVenta, Statement.RETURN_GENERATED_KEYS);
+            pstmtVenta.setLong(1, cliente_id);
+            pstmtVenta.setString(2, producto_id);
+            pstmtVenta.setInt(3, cantidad);
+            pstmtVenta.setDouble(4, monto_total);
+            pstmtVenta.setDouble(5, monto_total); // Saldo pendiente es el monto total al inicio
+            pstmtVenta.setBoolean(6, true);
+            pstmtVenta.executeUpdate();
+
+            ResultSet rs = pstmtVenta.getGeneratedKeys();
+            long id_venta = -1;
+            if (rs.next()) {
+                id_venta = rs.getLong(1);
+            }
+
+            // Paso 2: Generar e insertar cada cuota en la tabla 'cuotas'
+            double monto_cuota = monto_total / numero_cuotas;
+            String sqlCuota = "INSERT INTO cuotas (detalle_venta_id, monto_cuota, estado, fecha_vencimiento) VALUES (?, ?, 'Pendiente', ?)";
+            PreparedStatement pstmtCuota = conn.prepareStatement(sqlCuota);
+            java.util.Date fecha_vencimiento_base = new java.util.Date();
+            for (int i = 0; i < numero_cuotas; i++) {
+                java.util.Calendar cal = java.util.Calendar.getInstance();
+                cal.setTime(fecha_vencimiento_base);
+                cal.add(java.util.Calendar.MONTH, i + 1); // Vence cada mes
+                pstmtCuota.setLong(1, id_venta);
+                pstmtCuota.setDouble(2, monto_cuota);
+                pstmtCuota.setDate(3, new java.sql.Date(cal.getTimeInMillis()));
+                pstmtCuota.addBatch();
+            }
+            pstmtCuota.executeBatch();
+
+            conn.commit();
+            System.out.println("Venta en cuotas registrada.");
+
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            e.printStackTrace();
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

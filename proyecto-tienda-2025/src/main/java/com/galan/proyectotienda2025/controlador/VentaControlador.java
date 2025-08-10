@@ -1,5 +1,6 @@
-package com.galan.proyectotienda2025;
+package com.galan.proyectotienda2025.controlador;
 
+import com.galan.proyectotienda2025.Database;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,7 +13,6 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 public class VentaControlador {
 

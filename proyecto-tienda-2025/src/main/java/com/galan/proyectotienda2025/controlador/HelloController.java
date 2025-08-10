@@ -1,4 +1,4 @@
-package com.galan.proyectotienda2025;
+package com.galan.proyectotienda2025.controlador;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

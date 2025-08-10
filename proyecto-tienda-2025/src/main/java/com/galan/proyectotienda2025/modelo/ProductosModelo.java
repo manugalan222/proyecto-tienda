@@ -1,8 +1,6 @@
-package com.galan.proyectotienda2025;
+package com.galan.proyectotienda2025.modelo;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import com.galan.proyectotienda2025.Database;
 
 public class ProductosModelo {
     Database db;

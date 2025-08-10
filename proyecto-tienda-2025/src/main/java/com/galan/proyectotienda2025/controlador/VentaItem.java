@@ -1,4 +1,6 @@
-package com.galan.proyectotienda2025;
+package com.galan.proyectotienda2025.controlador;
+
+import com.galan.proyectotienda2025.Database;
 
 public class VentaItem {
     private Database.Producto producto;
