@@ -35,22 +35,24 @@
 
                 <TextField fx:id="txtProductoId" promptText="ID" maxWidth="Infinity" />
 
-                <ComboBox fx:id="comboEstado"  promptText="Estado" maxWidth="Infinity"/>
+                <ComboBox fx:id="comboTemporada"  promptText="Temporada" maxWidth="Infinity"/>
                 <ComboBox fx:id="comboTipo" promptText="Tipo" maxWidth="Infinity"/>
                 <ComboBox fx:id="comboMarca" promptText="Marca" maxWidth="Infinity"/>
+                <ComboBox fx:id="comboPromo" promptText="Promocionable" maxWidth="Infinity"/>
 
                 <TextField fx:id="txtProductoNombre" promptText="Nombre" maxWidth="Infinity" />
-                <TextArea fx:id="txtDescripcion" promptText="Descripción" prefRowCount="1" maxWidth="Infinity"/>
+                <TextArea fx:id="txtProductoDesc" promptText="Descripción" prefRowCount="1" maxWidth="Infinity"/>
 
                 <HBox spacing="10" alignment="CENTER_LEFT" maxWidth="Infinity">
                     <Label text="Stock:"/>
                     <Spinner fx:id="spinnerStock" prefWidth="100" />
                 </HBox>
 
-                <TextField fx:id="txtPrecio" promptText="Precio" maxWidth="Infinity" />
+                <TextField fx:id="txtPrecioCompra" promptText="Precio compra" maxWidth="Infinity" />
+                <TextField fx:id="txtPrecioVenta" promptText="Precio venta" maxWidth="Infinity" />
 
                 <HBox spacing="10" alignment="CENTER" maxWidth="Infinity">
-                    <Button text="Añadir" fx:id="btnAnadir" maxWidth="Infinity"/>
+                    <Button text="Añadir" fx:id="btnAnadir" maxWidth="Infinity" onAction="#onAgregarButtonClick"/>
                     <Button text="Resetear" fx:id="btnResetear" maxWidth="Infinity" />
                     <Button text="Borrar" fx:id="btnBorrar" maxWidth="Infinity"/>
                     <Button text="Actualizar" fx:id="btnActualizar" maxWidth="Infinity" />
