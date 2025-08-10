@@ -7,10 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -20,13 +17,24 @@ import java.util.ResourceBundle;
 public class ProductosControlador implements Initializable {
 
     ProductosModelo productosModelo= new ProductosModelo();
-
     @FXML
-    private ComboBox<String> comboEstado;
+    TextField txtProductoId = null;
+    @FXML
+    TextField txtProductoNombre = null;
+    @FXML
+    TextArea txtProductoDesc = null;
+    @FXML
+    TextField txtPrecioCompra = null;
+    @FXML
+    TextField txtPrecioVenta = null;
+    @FXML
+    private ComboBox<String> comboTemporada;
     @FXML
     private ComboBox<String> comboTipo;
     @FXML
     private ComboBox<String> comboMarca;
+    @FXML
+    private ComboBox<Boolean> comboPromo;
     @FXML
     private Spinner<Integer> spinnerStock;
 
@@ -89,27 +97,26 @@ public class ProductosControlador implements Initializable {
     }
 
     public void onAgregarButtonClick(ActionEvent actionEvent) throws IOException {
-        TextField txtProductoId = null;
-        TextField txtProductoNombre = null;
-        TextField txtProductoDesc = null;
 
-            /*
-        precio_compra DECIMAL(10,2) NOT NULL,
-        precio_venta DECIMAL(10,2) NOT NULL,
-        temporada_producto VARCHAR(30) NOT NULL,
-        promocionable BOOLEAN NOT NULL,
-        marca VARCHAR(50) NOT NULL,
-        stock INT NOT NULL */
+        /* Recibe los valores para la base de datos*/
+        String temporadaValor = comboTemporada.getValue();
+        String tipoValor = comboTipo.getValue();
+        String marcaValor = comboMarca.getValue();
+        Boolean promoValor = comboPromo.getValue();
+        int stockValor = spinnerStock.getValue();
+        double precioCompra = Double.parseDouble(txtPrecioCompra.getText());
+        double precioVenta = Double.parseDouble(txtPrecioVenta.getText());
         String productoId = txtProductoId.getText();
         String productoNombre = txtProductoNombre.getText();
         String productoDesc = txtProductoDesc.getText();
-        productosModelo.agregarProductoBd(productoId);
+
+        productosModelo.agregarProductoBd(temporadaValor,tipoValor,marcaValor,stockValor,precioCompra,precioVenta,productoId,productoNombre,productoDesc,promoValor);
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Cargar opciones para Estado
-        comboEstado.getItems().addAll("Disponible", "No disponible", "En pedido");
+        comboTemporada.getItems().addAll("Disponible", "No disponible", "En pedido");
 
         // Cargar opciones para Tipo
         comboTipo.getItems().addAll("Pantalon", "Remera", "Campera", "Beanies");
@@ -122,8 +129,10 @@ public class ProductosControlador implements Initializable {
 
         spinnerStock.setValueFactory(valueFactory);
 
-        // Opcional: evitar que el usuario escriba texto inválido
+        //usuario escriba texto inválido
         spinnerStock.setEditable(true);
+
+        comboPromo.getItems().addAll(true,false);
 
     }
 }

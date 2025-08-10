@@ -44,11 +44,14 @@
                 <columns>
                     <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
                     <TableColumn fx:id="colNombre" text="Nombre" prefWidth="150"/>
+                    <TableColumn fx:id="colDesc" text="Descripcion" prefWidth="150"/>
+                    <TableColumn fx:id="colCompra" text="Precio compra" prefWidth="150"/>
+                    <TableColumn fx:id="colVenta" text="Precio venta" prefWidth="150"/>
                     <TableColumn fx:id="colMarca" text="Marca" prefWidth="100"/>
-                    <TableColumn fx:id="colCategoria" text="Categoría" prefWidth="100"/>
-                    <TableColumn fx:id="colEstado" text="Estado" prefWidth="100"/>
+                    <TableColumn fx:id="colTemporada" text="Temporada" prefWidth="100"/>
+                    <TableColumn fx:id="colTipo" text="Tipo" prefWidth="100"/>
                     <TableColumn fx:id="colStock" text="Stock" prefWidth="80"/>
-                    <TableColumn fx:id="colPrecio" text="Precio" prefWidth="80"/>
+                    <TableColumn fx:id="colPromo" text="Promo" prefWidth="80"/>
                 </columns>
             </TableView>
 
