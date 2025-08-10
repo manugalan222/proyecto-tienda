@@ -48,7 +48,7 @@ public class Database {
             """);
 
             stmt.execute("""
-                CREATE TABLE IF NOT EXISTS detalle_compra (
+                CREATE TABLE IF NOT EXISTS detalle_venta (
                     id IDENTITY PRIMARY KEY,
                     cliente_id BIGINT NOT NULL,
                     producto_id VARCHAR(100) NOT NULL,
@@ -171,6 +171,35 @@ public class Database {
         }
     }
 
+    public static Producto obtenerProductoPorId(String id) {
+        String sql = "SELECT * FROM productos WHERE id=?";
+        Producto producto = null;
+
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, id);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    producto = new Producto(
+                            rs.getString("id"),
+                            rs.getString("nombre"),
+                            rs.getDouble("precio_compra"),
+                            rs.getDouble("precio_venta"),
+                            rs.getString("temporada_producto"),
+                            rs.getBoolean("promocionable"),
+                            rs.getString("descripcion"),
+                            rs.getString("marca"),
+                            rs.getInt("stock")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return producto;
+    }
+
     // Clase auxiliar para mapear resultados
     public static class Producto {
         public String id;
@@ -194,6 +223,30 @@ public class Database {
             this.descripcion = descripcion;
             this.marca = marca;
             this.stock = stock;
+        }
+
+        public static void insertarDetalleVenta(String producto_id, int cantidad, String nombre, double precioCompra, double precioVenta, String temporada,
+                                            boolean promocionable, String descripcion, String marca, int stock) {
+            String sql = "INSERT INTO productos (id, nombre, precio_compra, precio_venta, temporada_producto, promocionable, descripcion, marca, stock) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            try (Connection conn = connect();
+                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+                pstmt.setString(2, nombre);
+                pstmt.setDouble(3, precioCompra);
+                pstmt.setDouble(4, precioVenta);
+                pstmt.setString(5, temporada);
+                pstmt.setBoolean(6, promocionable);
+                pstmt.setString(7, descripcion);
+                pstmt.setString(8, marca);
+                pstmt.setInt(9, stock);
+
+                pstmt.executeUpdate();
+                System.out.println("Producto agregado.");
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override

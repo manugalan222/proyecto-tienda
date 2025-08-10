@@ -41,7 +41,7 @@
                 <!-- Entrada de producto -->
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <TextField fx:id="txtProductoId" promptText="ID del Producto" prefWidth="200"/>
-                    <Button text="Añadir Producto" />
+                    <Button text="Añadir Producto" onAction="#onAñadirProductoClick" />
                 </HBox>
 
                 <!-- Tabla de productos añadidos -->
