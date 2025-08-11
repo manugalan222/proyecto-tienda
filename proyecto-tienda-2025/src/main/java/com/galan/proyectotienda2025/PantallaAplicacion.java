@@ -12,9 +12,12 @@ public class PantallaAplicacion extends Application {
     public void start(Stage stage) throws IOException {
         Database.init();
 
-        //Database.insertarProducto("Remera", 100, 150, "verano", true, "Remera de algodón", "MarcaX", 50);
+        //Database.insertarProducto("1","Remera", 100, 150, "verano", true, "Remera de algodón", "MarcaX", 50);
+        //Database.insertarProducto("2","Tanga", 100, 150, "verano", true, "Remera de algodón", "MarcaX", 50);
         //Database.actualizarProducto(3,"Remera",100,300,"Verano",false, "Remera de algodon", "Nike", 10);
         //Database.eliminarProducto(3);
+        //Database.listarProductos();
+
         var productos = Database.listarProductos();
         productos.forEach(System.out::println);
 

@@ -9,4 +9,8 @@ module com.galan.proyectotienda2025 {
 
     opens com.galan.proyectotienda2025 to javafx.fxml;
     exports com.galan.proyectotienda2025;
+    exports com.galan.proyectotienda2025.controlador;
+    opens com.galan.proyectotienda2025.controlador to javafx.fxml;
+    exports com.galan.proyectotienda2025.modelo;
+    opens com.galan.proyectotienda2025.modelo to javafx.fxml;
 }

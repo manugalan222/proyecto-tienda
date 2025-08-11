@@ -8,7 +8,7 @@
 <?import javafx.scene.image.Image?>
 <BorderPane prefHeight="600.0" prefWidth="900.0" stylesheets="@estilos.css"
             xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.galan.proyectotienda2025.ProductosControlador">
+            fx:controller="com.galan.proyectotienda2025.controlador.ProductosControlador">
 
     <!-- Barra lateral -->
     <left>
