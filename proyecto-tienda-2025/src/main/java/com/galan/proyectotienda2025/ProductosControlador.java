@@ -57,6 +57,10 @@ public class ProductosControlador implements Initializable {
         cambiarEscena(actionEvent, "pantalla_venta.fxml");
     }
 
+    public void onCuotasButtonClick(ActionEvent actionEvent) throws IOException {
+        cambiarEscena(actionEvent, "pantalla_cuotas.fxml");
+    }
+
     public void onAgregarButtonClick(ActionEvent actionEvent) throws IOException {
 
         /* Recibe los valores para la base de datos*/
@@ -118,4 +122,5 @@ public class ProductosControlador implements Initializable {
         stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
         stage.show();
     }
+
 }

@@ -10,7 +10,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 
 public class VentaControlador {
@@ -20,6 +19,7 @@ public class VentaControlador {
     @FXML ComboBox<String> comboTipoCuotas;
     @FXML private TextField txtNumCuotas;
     @FXML private TextField txtProductoId;
+    @FXML private TextField txtCantidad;
     @FXML private TableView<VentaItem> tablaProductos;
     @FXML private TableColumn<VentaItem, String> columnaId;
     @FXML private TableColumn<VentaItem, String> columnaNombre;
@@ -82,30 +82,59 @@ public class VentaControlador {
     @FXML
     public void onAñadirProductoClick() {
         String id = txtProductoId.getText().trim();
-        if (id.isEmpty()) return;
-
-        Database.Producto producto = Database.obtenerProductoPorId(id);
-        if (producto == null) {
-            mostrarAlerta("Producto no encontrado");
+        if (id.isEmpty()) {
+            mostrarAlerta("Por favor, ingrese el ID del producto.");
             return;
         }
 
-        // Si ya existe en el carrito, aumentar cantidad
+        int cantidad = 0;
+        try {
+            cantidad = Integer.parseInt(txtCantidad.getText().trim());
+            if (cantidad <= 0) {
+                mostrarAlerta("La cantidad debe ser mayor que 0.");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            mostrarAlerta("La cantidad debe ser un número entero.");
+            return;
+        }
+
+        Producto producto = Database.obtenerProductoPorId(id);
+        if (producto == null) {
+            mostrarAlerta("Producto no encontrado.");
+            return;
+        }
+
+        // Verificar si hay suficiente stock para la cantidad total
+        if (producto.stock < cantidad) {
+            mostrarAlerta("No hay suficiente stock para este producto. Stock actual: " + producto.stock);
+            return;
+        }
+
+        // Si ya existe en el carrito, actualizar la cantidad
         for (VentaItem item : carrito) {
             if (item.getId().equals(producto.id)) {
-                item.setCantidad(item.getCantidad() + 1);
+                // Verificar si la nueva cantidad excede el stock disponible
+                if ((item.getCantidad() + cantidad) > producto.stock) {
+                    mostrarAlerta("No se puede añadir esta cantidad. El stock disponible es de " + (producto.stock - item.getCantidad()));
+                    return;
+                }
+                item.setCantidad(item.getCantidad() + cantidad);
                 tablaProductos.refresh();
                 calcularPrecioFinal();
                 txtProductoId.clear();
+                txtCantidad.setText("1");
                 return;
             }
         }
 
-        carrito.add(new VentaItem(producto, 1));
+        // Si es un producto nuevo en el carrito, lo añade.
+        carrito.add(new VentaItem(producto, cantidad));
         calcularPrecioFinal();
         txtProductoId.clear();
-
+        txtCantidad.setText("1");
     }
+
 
     @FXML
     public void onFinalizarVentaClick() {
@@ -120,7 +149,7 @@ public class VentaControlador {
             return;
         }
 
-        Database.Cliente cliente = Database.obtenerClientePorDni(dni);
+        Cliente cliente = Database.obtenerClientePorDni(dni);
 
         if (cliente == null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -176,8 +205,8 @@ public class VentaControlador {
             Parent root = fxmlLoader.load();
 
             // Pasamos el DNI al controlador del nuevo formulario
-            ClienteControlador clienteControlador = fxmlLoader.getController();
-            clienteControlador.setDni(dni);
+            PopUpClienteControlador popUpClienteControlador = fxmlLoader.getController();
+            popUpClienteControlador.setDni(dni);
 
             Stage stage = new Stage();
             stage.setTitle("Registrar Nuevo Cliente");
@@ -190,7 +219,7 @@ public class VentaControlador {
         }
     }
 
-    private double calcularPrecioFinal() {
+    private void calcularPrecioFinal() {
         double total = carrito.stream().mapToDouble(VentaItem::getSubtotal).sum();
         double descuento = 0;
         try {
@@ -201,7 +230,6 @@ public class VentaControlador {
 
         total -= total * (descuento / 100);
         txtPrecioFinal.setText(String.format("%.2f", total));
-        return total;
     }
 
     private void mostrarAlerta(String mensaje) {
@@ -215,6 +243,7 @@ public class VentaControlador {
     public void onInicioButtonClick(ActionEvent actionEvent) throws IOException { cambiarEscena(actionEvent, "pantalla_principal.fxml"); }
     public void onInventarioButtonClick(ActionEvent actionEvent) throws IOException { cambiarEscena(actionEvent, "pantalla_inventario.fxml"); }
     public void onClienteButtonClick(ActionEvent actionEvent) throws IOException { cambiarEscena(actionEvent, "pantalla_clientes.fxml"); }
+    public void onCuotasButtonClick(ActionEvent actionEvent) throws IOException { cambiarEscena(actionEvent, "pantalla_cuotas.fxml"); }
 
     private void cambiarEscena(ActionEvent actionEvent, String fxml) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource(fxml));
@@ -222,4 +251,5 @@ public class VentaControlador {
         stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
         stage.show();
     }
+
 }
