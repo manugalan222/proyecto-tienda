@@ -11,63 +11,30 @@ import java.io.IOException;
 
 public class PantallaControlador {
 
-    public void onInicioButtonClick(ActionEvent actionEvent) {
+    public void onInicioButtonClick(ActionEvent actionEvent) throws IOException {
+        cambiarEscena(actionEvent, "pantalla_principal.fxml");
     }
 
     public void onProductosButtonClick(ActionEvent actionEvent) throws IOException {
-        // Cargo el FXML de productos
-        Parent root = FXMLLoader.load(getClass().getResource("pantalla_productos.fxml"));
-
-        // Obtengo el Stage actual a partir del evento
-        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        double ancho = stage.getWidth();
-        double alto = stage.getHeight();
-        // Cambio la escena
-        stage.setScene(new Scene(root,ancho,alto));
-        stage.show();
-
+        cambiarEscena(actionEvent, "pantalla_productos.fxml");
     }
 
     public void onInventarioButtonClick(ActionEvent actionEvent) throws IOException {
-
-        // Cargo el FXML de productos
-        Parent root = FXMLLoader.load(getClass().getResource("pantalla_inventario.fxml"));
-
-        // Obtengo el Stage actual a partir del evento
-        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        double ancho = stage.getWidth();
-        double alto = stage.getHeight();
-
-        // Cambio la escena
-        stage.setScene(new Scene(root,ancho,alto));
-        stage.show();
+        cambiarEscena(actionEvent, "pantalla_inventario.fxml");
     }
 
     public void onVentaButtonClick(ActionEvent actionEvent) throws IOException {
-        // Cargo el FXML de productos
-        Parent root = FXMLLoader.load(getClass().getResource("pantalla_venta.fxml"));
-
-        // Obtengo el Stage actual a partir del evento
-        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        double ancho = stage.getWidth();
-        double alto = stage.getHeight();
-
-        // Cambio la escena
-        stage.setScene(new Scene(root,ancho,alto));
-        stage.show();
+        cambiarEscena(actionEvent, "pantalla_venta.fxml");
     }
 
     public void onClienteButtonClick(ActionEvent actionEvent) throws IOException {
-        // Cargo el FXML de productos
-        Parent root = FXMLLoader.load(getClass().getResource("pantalla_clientes.fxml"));
+        cambiarEscena(actionEvent, "pantalla_clientes.fxml");
+    }
 
-        // Obtengo el Stage actual a partir del evento
+    private void cambiarEscena(ActionEvent actionEvent, String fxml) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource(fxml));
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        double ancho = stage.getWidth();
-        double alto = stage.getHeight();
-
-        // Cambio la escena
-        stage.setScene(new Scene(root,ancho,alto));
+        stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
         stage.show();
     }
 }

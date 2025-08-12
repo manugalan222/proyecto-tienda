@@ -17,11 +17,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.galan.proyectotienda2025.Database;
 public class InventarioControlador implements Initializable {
 
-    @FXML
-    private TableView<Database.Producto> tablaProductos;
+    @FXML private TableView<Database.Producto> tablaProductos;
     @FXML private TableColumn<Database.Producto, String> colId;
     @FXML private TableColumn<Database.Producto, String> colNombre;
     @FXML private TableColumn<Database.Producto, String> colDesc;
@@ -34,76 +32,17 @@ public class InventarioControlador implements Initializable {
     @FXML private TableColumn<Database.Producto, Boolean> colPromo;
 
     public void onInicioButtonClick(ActionEvent actionEvent) throws IOException {
-
-        // Cargo el FXML de productos
-        Parent root = FXMLLoader.load(getClass().getResource("pantalla_principal.fxml"));
-
-        // Obtengo el Stage actual a partir del evento
-        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        double ancho = stage.getWidth();
-        double alto = stage.getHeight();
-
-        // Cambio la escena
-        stage.setScene(new Scene(root,ancho,alto));
-        stage.show();
+        cambiarEscena(actionEvent,"pantalla_principal.fxml");
     }
 
     public void onProductosButtonClick(ActionEvent actionEvent) throws IOException {
-
-        // Cargo el FXML de productos
-        Parent root = FXMLLoader.load(getClass().getResource("pantalla_productos.fxml"));
-
-        // Obtengo el Stage actual a partir del evento
-        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        double ancho = stage.getWidth();
-        double alto = stage.getHeight();
-
-        // Cambio la escena
-        stage.setScene(new Scene(root,ancho,alto));
-        stage.show();
+        cambiarEscena(actionEvent,"pantalla_productos.fxml");
     }
     public void onVentasButtonClick(ActionEvent actionEvent) throws IOException {
-
-        // Cargo el FXML de productos
-        Parent root = FXMLLoader.load(getClass().getResource("pantalla_venta.fxml"));
-
-        // Obtengo el Stage actual a partir del evento
-        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        double ancho = stage.getWidth();
-        double alto = stage.getHeight();
-
-        // Cambio la escena
-        stage.setScene(new Scene(root,ancho,alto));
-        stage.show();
+        cambiarEscena(actionEvent,"pantalla_ventas.fxml");
     }
     public void onClientesButtonClick(ActionEvent actionEvent) throws IOException {
-
-        // Cargo el FXML de productos
-        Parent root = FXMLLoader.load(getClass().getResource("pantalla_clientes.fxml"));
-
-        // Obtengo el Stage actual a partir del evento
-        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        double ancho = stage.getWidth();
-        double alto = stage.getHeight();
-
-        // Cambio la escena
-        stage.setScene(new Scene(root,ancho,alto));
-        stage.show();
-    }
-
-    public void onInventarioButtonClick(ActionEvent actionEvent) throws IOException {
-
-        // Cargo el FXML de productos
-        Parent root = FXMLLoader.load(getClass().getResource("pantalla_inventario.fxml"));
-
-        // Obtengo el Stage actual a partir del evento
-        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        double ancho = stage.getWidth();
-        double alto = stage.getHeight();
-
-        // Cambio la escena
-        stage.setScene(new Scene(root,ancho,alto));
-        stage.show();
+        cambiarEscena(actionEvent,"pantalla_clientes.fxml");
     }
 
     @Override
@@ -124,5 +63,12 @@ public class InventarioControlador implements Initializable {
 
         tablaProductos.setItems(productosObservable);
 
+    }
+
+    private void cambiarEscena(ActionEvent actionEvent, String fxml) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource(fxml));
+        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
+        stage.show();
     }
 }
