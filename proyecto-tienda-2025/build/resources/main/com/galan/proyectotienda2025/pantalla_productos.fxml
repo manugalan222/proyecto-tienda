@@ -36,7 +36,6 @@
                 <TextField fx:id="txtProductoId" promptText="ID" maxWidth="Infinity" />
 
                 <ComboBox fx:id="comboTemporada"  promptText="Temporada" maxWidth="Infinity"/>
-                <ComboBox fx:id="comboTipo" promptText="Tipo" maxWidth="Infinity"/>
                 <ComboBox fx:id="comboMarca" promptText="Marca" maxWidth="Infinity"/>
                 <ComboBox fx:id="comboPromo" promptText="Promocionable" maxWidth="Infinity"/>
 
@@ -63,15 +62,17 @@
             <!-- Derecha: tabla productos -->
             <VBox spacing="10" prefWidth="550" VBox.vgrow="ALWAYS">
                 <Text text="Lista de Productos" styleClass="titulo" />
-                <TableView fx:id="tablaProductos" VBox.vgrow="ALWAYS" prefHeight="Infinity">
+                <TableView fx:id="tablaProductos2" VBox.vgrow="ALWAYS" prefHeight="Infinity">
                     <columns>
-                        <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
-                        <TableColumn fx:id="colNombre" text="Nombre" prefWidth="150"/>
-                        <TableColumn fx:id="colMarca" text="Marca" prefWidth="100"/>
-                        <TableColumn fx:id="colEstado" text="Estado" prefWidth="100"/>
-                        <TableColumn fx:id="colTipo" text="Tipo" prefWidth="100"/>
-                        <TableColumn fx:id="colStock" text="Stock" prefWidth="80"/>
-                        <TableColumn fx:id="colPrecio" text="Precio" prefWidth="100"/>
+                        <TableColumn fx:id="colId2" text="ID" prefWidth="60"/>
+                        <TableColumn fx:id="colNombre2" text="Nombre" prefWidth="150"/>
+                        <TableColumn fx:id="colDesc2" text="Descripcion" prefWidth="150"/>
+                        <TableColumn fx:id="colCompra2" text="Precio compra" prefWidth="150"/>
+                        <TableColumn fx:id="colVenta2" text="Precio venta" prefWidth="150"/>
+                        <TableColumn fx:id="colMarca2" text="Marca" prefWidth="100"/>
+                        <TableColumn fx:id="colTemporada2" text="Temporada" prefWidth="100"/>
+                        <TableColumn fx:id="colStock2" text="Stock" prefWidth="80"/>
+                        <TableColumn fx:id="colPromo2" text="Promo" prefWidth="80"/>
                     </columns>
                 </TableView>
             </VBox>
