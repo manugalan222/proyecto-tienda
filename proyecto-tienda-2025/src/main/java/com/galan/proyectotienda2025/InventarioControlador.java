@@ -19,17 +19,17 @@ import java.util.ResourceBundle;
 
 public class InventarioControlador implements Initializable {
 
-    @FXML private TableView<Database.Producto> tablaProductos;
-    @FXML private TableColumn<Database.Producto, String> colId;
-    @FXML private TableColumn<Database.Producto, String> colNombre;
-    @FXML private TableColumn<Database.Producto, String> colDesc;
-    @FXML private TableColumn<Database.Producto, Double> colCompra;
-    @FXML private TableColumn<Database.Producto, Double> colVenta;
-    @FXML private TableColumn<Database.Producto, String> colMarca;
-    @FXML private TableColumn<Database.Producto, String> colTemporada;
-    @FXML private TableColumn<Database.Producto, String> colTipo;
-    @FXML private TableColumn<Database.Producto, Integer> colStock;
-    @FXML private TableColumn<Database.Producto, Boolean> colPromo;
+    @FXML private TableView<Producto> tablaProductos;
+    @FXML private TableColumn<Producto, String> colId;
+    @FXML private TableColumn<Producto, String> colNombre;
+    @FXML private TableColumn<Producto, String> colDesc;
+    @FXML private TableColumn<Producto, Double> colCompra;
+    @FXML private TableColumn<Producto, Double> colVenta;
+    @FXML private TableColumn<Producto, String> colMarca;
+    @FXML private TableColumn<Producto, String> colTemporada;
+    @FXML private TableColumn<Producto, String> colTipo;
+    @FXML private TableColumn<Producto, Integer> colStock;
+    @FXML private TableColumn<Producto, Boolean> colPromo;
 
     public void onInicioButtonClick(ActionEvent actionEvent) throws IOException {
         cambiarEscena(actionEvent,"pantalla_principal.fxml");
@@ -39,10 +39,14 @@ public class InventarioControlador implements Initializable {
         cambiarEscena(actionEvent,"pantalla_productos.fxml");
     }
     public void onVentasButtonClick(ActionEvent actionEvent) throws IOException {
-        cambiarEscena(actionEvent,"pantalla_ventas.fxml");
+        cambiarEscena(actionEvent,"pantalla_venta.fxml");
     }
     public void onClientesButtonClick(ActionEvent actionEvent) throws IOException {
         cambiarEscena(actionEvent,"pantalla_clientes.fxml");
+    }
+
+    public void onCuotasButtonClick(ActionEvent actionEvent) throws IOException {
+        cambiarEscena(actionEvent,"pantalla_cuotass.fxml");
     }
 
     @Override
@@ -59,7 +63,7 @@ public class InventarioControlador implements Initializable {
         colDesc.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
 
         // Traer los datos de la BD y mostrarlos
-        ObservableList<Database.Producto> productosObservable = FXCollections.observableArrayList(Database.listarProductos());
+        ObservableList<Producto> productosObservable = FXCollections.observableArrayList(Database.listarProductos());
 
         tablaProductos.setItems(productosObservable);
 
@@ -71,4 +75,6 @@ public class InventarioControlador implements Initializable {
         stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
         stage.show();
     }
+
+
 }

@@ -90,6 +90,8 @@ public class Database {
                 );
             """);
 
+
+
             System.out.println("Base de datos inicializada.");
 
         } catch (SQLException e) {
@@ -158,6 +160,8 @@ public class Database {
                 pstmtLinea.setInt(3, item.getCantidad());
                 pstmtLinea.setDouble(4, item.getSubtotal());
                 pstmtLinea.addBatch();
+
+                actualizarStock(conn, item.getId(), item.getCantidad());
             }
             pstmtLinea.executeBatch();
 
@@ -206,6 +210,15 @@ public class Database {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    private static void actualizarStock(Connection conn, String productoId, int cantidad) throws SQLException {
+        String sql = "UPDATE productos SET stock = stock - ? WHERE id = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, cantidad);
+            pstmt.setString(2, productoId);
+            pstmt.executeUpdate();
         }
     }
 
@@ -375,68 +388,93 @@ public class Database {
         }
     }
 
+    public static List<ResumenVenta> obtenerResumenVentas() {
+        List<ResumenVenta> resumenVentas = new ArrayList<>();
+        String sql = """
+            SELECT
+                c.venta_id,
+                cl.dni AS cliente_dni,
+                v.monto_total,
+                v.saldo_pendiente AS saldo_restante,
+                c.tipo_cuota,
+                COUNT(c.id) AS cuotas_totales,
+                SUM(CASE WHEN c.estado = 'Pagada' THEN 1 ELSE 0 END) AS cuotas_pagadas,
+                SUM(CASE WHEN c.estado = 'Pendiente' THEN 1 ELSE 0 END) AS cuotas_pendientes,
+                DATEADD('DAY', 200, v.fecha_compra) AS fecha_plazo_200_dias
+            FROM cuotas AS c
+            JOIN venta AS v ON c.venta_id = v.id
+            JOIN cliente AS cl ON v.cliente_id = cl.id
+            GROUP BY c.venta_id, cl.dni, v.monto_total, v.saldo_pendiente, c.tipo_cuota, v.fecha_compra
+            ORDER BY c.venta_id ASC;
+            """;
 
-    public static class Cliente {
-        public long id;
-        public String nombre;
-        public String apellido;
-        public String telefono;
-        public String dni;
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
 
-        public Cliente(long id, String nombre, String apellido, String telefono, String dni) {
-            this.id = id;
-            this.nombre = nombre;
-            this.apellido = apellido;
-            this.telefono = telefono;
-            this.dni = dni;
+            while (rs.next()) {
+                resumenVentas.add(new ResumenVenta(
+                        rs.getLong("venta_id"),
+                        rs.getString("cliente_dni"),
+                        rs.getDouble("monto_total"),
+                        rs.getDouble("saldo_restante"),
+                        rs.getString("tipo_cuota"),
+                        rs.getInt("cuotas_totales"),
+                        rs.getInt("cuotas_pagadas"),
+                        rs.getInt("cuotas_pendientes"),
+                        rs.getDate("fecha_plazo_200_dias").toLocalDate()));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener el resumen de ventas detallado: " + e.getMessage());
+            e.printStackTrace();
         }
-
-        public long getId() {
-            return id;
-        }
+        return resumenVentas;
     }
 
+    public static List<ResumenVenta> buscarResumenVentasPorDni(String dni) {
+        List<ResumenVenta> resumenEncontrados = new ArrayList<>();
+        String sql = """
+            SELECT
+                c.venta_id,
+                cl.dni AS cliente_dni,
+                v.monto_total,
+                v.saldo_pendiente AS saldo_restante,
+                c.tipo_cuota,
+                COUNT(c.id) AS cuotas_totales,
+                SUM(CASE WHEN c.estado = 'Pagada' THEN 1 ELSE 0 END) AS cuotas_pagadas,
+                SUM(CASE WHEN c.estado = 'Pendiente' THEN 1 ELSE 0 END) AS cuotas_pendientes,
+                DATEADD('DAY', 200, v.fecha_compra) AS fecha_plazo_200_dias
+            FROM cuotas AS c
+            JOIN venta AS v ON c.venta_id = v.id
+            JOIN cliente AS cl ON v.cliente_id = cl.id
+            WHERE cl.dni = ?
+            GROUP BY c.venta_id, cl.dni, v.monto_total, v.saldo_pendiente, c.tipo_cuota, v.fecha_compra
+            ORDER BY c.venta_id ASC;
+            """;
 
-        // Clase auxiliar para mapear resultados
-    public static class Producto {
-        public String id;
-        public String nombre;
-        public double precioCompra;
-        public double precioVenta;
-        public String temporada;
-        public boolean promocionable;
-        public String descripcion;
-        public String marca;
-        public int stock;
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-        public Producto(String id, String nombre, double precioCompra, double precioVenta, String temporada,
-                        boolean promocionable, String descripcion, String marca, int stock) {
-            this.id = id;
-            this.nombre = nombre;
-            this.precioCompra = precioCompra;
-            this.precioVenta = precioVenta;
-            this.temporada = temporada;
-            this.promocionable = promocionable;
-            this.descripcion = descripcion;
-            this.marca = marca;
-            this.stock = stock;
+            pstmt.setString(1, dni);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                resumenEncontrados.add(new ResumenVenta(
+                        rs.getLong("venta_id"),
+                        rs.getString("cliente_dni"),
+                        rs.getDouble("monto_total"),
+                        rs.getDouble("saldo_restante"),
+                        rs.getString("tipo_cuota"),
+                        rs.getInt("cuotas_totales"),
+                        rs.getInt("cuotas_pagadas"),
+                        rs.getInt("cuotas_pendientes"),
+                        rs.getDate("fecha_plazo_200_dias").toLocalDate()));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al buscar resumen de ventas detallado por DNI: " + e.getMessage());
+            e.printStackTrace();
         }
-
-            public String getId() { return id; }
-            public String getNombre() { return nombre; }
-            public String getDescripcion() { return descripcion; }
-            public double getPrecioCompra() { return precioCompra; }
-            public double getPrecioVenta() { return precioVenta; }
-            public String getMarca() { return marca; }
-            public String getTemporada() { return temporada; }
-            public int getStock() { return stock; }
-            public boolean isPromocionable() { return promocionable; }
-
-
-        @Override
-        public String toString() {
-            return String.format("%s: %s (Compra: $%.2f, Venta: $%.2f) Stock: %d", id, nombre, precioCompra, precioVenta, stock);
-        }
+        return resumenEncontrados;
     }
 
 }

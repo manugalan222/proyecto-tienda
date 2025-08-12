@@ -28,10 +28,15 @@ public class ClientesControlador {
         cambiarEscena(actionEvent,"pantalla_clientes.fxml");
     }
 
+    public void onCuotasButtonClick(ActionEvent actionEvent) throws IOException {
+        cambiarEscena(actionEvent,"pantalla_cuotas.fxml");
+    }
+
     private void cambiarEscena(ActionEvent actionEvent, String fxml) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource(fxml));
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
         stage.show();
     }
+
 }

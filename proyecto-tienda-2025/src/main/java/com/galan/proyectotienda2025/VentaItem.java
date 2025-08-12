@@ -1,15 +1,15 @@
 package com.galan.proyectotienda2025;
 
 public class VentaItem {
-    private Database.Producto producto;
+    private Producto producto;
     private int cantidad;
 
-    public VentaItem(Database.Producto producto, int cantidad) {
+    public VentaItem(Producto producto, int cantidad) {
         this.producto = producto;
         this.cantidad = cantidad;
     }
 
-    public Database.Producto getProducto() {
+    public Producto getProducto() {
         return producto;
     }
 

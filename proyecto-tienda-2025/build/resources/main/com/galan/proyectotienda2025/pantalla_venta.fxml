@@ -27,7 +27,7 @@
                 <Button text="Ventas" styleClass="menu-btn" maxWidth="Infinity"/>
                 <Button text="Clientes" styleClass="menu-btn" maxWidth="Infinity" onAction="#onClienteButtonClick"/>
                 <Button text="Inventario" styleClass="menu-btn" maxWidth="Infinity" onAction="#onInventarioButtonClick"/>
-                <Button text="Corte" styleClass="menu-btn" maxWidth="Infinity"/>
+                <Button text="Cuotas" styleClass="menu-btn" maxWidth="Infinity" onAction="#onCuotasButtonClick"/>
                 <Button text="Configuración" styleClass="menu-btn" maxWidth="Infinity"/>
             </children>
         </VBox>
@@ -43,6 +43,7 @@
                 <!-- Entrada de producto -->
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <TextField fx:id="txtProductoId" promptText="ID del Producto" prefWidth="200"/>
+                    <TextField fx:id="txtCantidad" promptText="Cantidad" prefWidth="100"/>
                     <Button text="Añadir Producto" onAction="#onAñadirProductoClick" />
                 </HBox>
 

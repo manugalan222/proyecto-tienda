@@ -21,7 +21,7 @@
                 <Button text="Ventas" styleClass="menu-btn" maxWidth="Infinity" onAction="#onVentaButtonClick"/>
                 <Button text="Clientes" styleClass="menu-btn" maxWidth="Infinity" onAction="#onClienteButtonClick"/>
                 <Button text="Inventario" styleClass="menu-btn" maxWidth="Infinity" onAction="#onInventarioButtonClick"/>
-                <Button text="Corte" styleClass="menu-btn" maxWidth="Infinity" />
+                <Button text="Cuotas" styleClass="menu-btn" maxWidth="Infinity" onAction="#onCuotasButtonClick"/>
                 <Button text="Configuración" styleClass="menu-btn" maxWidth="Infinity" />
             </children>
         </VBox>
