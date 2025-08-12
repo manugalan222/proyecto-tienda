@@ -302,6 +302,17 @@ public class Database {
             this.stock = stock;
         }
 
+        // getters (nombres usados por PropertyValueFactory)
+        public String getId() { return id; }
+        public String getNombre() { return nombre; }
+        public String getDescripcion() { return descripcion; }
+        public double getPrecioCompra() { return precioCompra; }
+        public double getPrecioVenta() { return precioVenta; }
+        public String getMarca() { return marca; }
+        public String getTemporada() { return temporada; }
+        public boolean getPromocionable() { return promocionable; }
+        public int getStock() { return stock; }
+
         public static void insertarDetalleVenta(String producto_id, int cantidad, String nombre, double precioCompra, double precioVenta, String temporada,
                                             boolean promocionable, String descripcion, String marca, int stock) {
             String sql = "INSERT INTO productos (id, nombre, precio_compra, precio_venta, temporada_producto, promocionable, descripcion, marca, stock) " +

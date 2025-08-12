@@ -1,6 +1,5 @@
-package com.galan.proyectotienda2025.controlador;
+package com.galan.proyectotienda2025;
 
-import com.galan.proyectotienda2025.Database;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;

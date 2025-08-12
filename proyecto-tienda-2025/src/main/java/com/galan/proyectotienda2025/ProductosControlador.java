@@ -1,6 +1,5 @@
-package com.galan.proyectotienda2025.controlador;
+package com.galan.proyectotienda2025;
 
-import com.galan.proyectotienda2025.modelo.ProductosModelo;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
