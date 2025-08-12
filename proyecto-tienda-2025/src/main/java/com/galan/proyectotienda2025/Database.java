@@ -390,6 +390,10 @@ public class Database {
             this.telefono = telefono;
             this.dni = dni;
         }
+
+        public long getId() {
+            return id;
+        }
     }
 
 
@@ -417,6 +421,17 @@ public class Database {
             this.marca = marca;
             this.stock = stock;
         }
+
+            public String getId() { return id; }
+            public String getNombre() { return nombre; }
+            public String getDescripcion() { return descripcion; }
+            public double getPrecioCompra() { return precioCompra; }
+            public double getPrecioVenta() { return precioVenta; }
+            public String getMarca() { return marca; }
+            public String getTemporada() { return temporada; }
+            public int getStock() { return stock; }
+            public boolean isPromocionable() { return promocionable; }
+
 
         @Override
         public String toString() {

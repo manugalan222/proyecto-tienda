@@ -17,83 +17,32 @@ import java.util.ResourceBundle;
 public class ProductosControlador implements Initializable {
 
     ProductosModelo productosModelo= new ProductosModelo();
-    @FXML
-    TextField txtProductoId = null;
-    @FXML
-    TextField txtProductoNombre = null;
-    @FXML
-    TextArea txtProductoDesc = null;
-    @FXML
-    TextField txtPrecioCompra = null;
-    @FXML
-    TextField txtPrecioVenta = null;
-    @FXML
-    private ComboBox<String> comboTemporada;
-    @FXML
-    private ComboBox<String> comboTipo;
-    @FXML
-    private ComboBox<String> comboMarca;
-    @FXML
-    private ComboBox<Boolean> comboPromo;
-    @FXML
-    private Spinner<Integer> spinnerStock;
+    @FXML TextField txtProductoId = null;
+    @FXML TextField txtProductoNombre = null;
+    @FXML TextArea txtProductoDesc = null;
+    @FXML TextField txtPrecioCompra = null;
+    @FXML TextField txtPrecioVenta = null;
+    @FXML private ComboBox<String> comboTemporada;
+    @FXML private ComboBox<String> comboTipo;
+    @FXML private ComboBox<String> comboMarca;
+    @FXML private ComboBox<Boolean> comboPromo;
+    @FXML private Spinner<Integer> spinnerStock;
 
 
     public void onInicioButtonClick(ActionEvent actionEvent) throws IOException {
-        // Cargo el FXML de productos
-        Parent root = FXMLLoader.load(getClass().getResource("pantalla_principal.fxml"));
-
-        // Obtengo el Stage actual a partir del evento
-        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        double ancho = stage.getWidth();
-        double alto = stage.getHeight();
-        // Cambio la escena
-        stage.setScene(new Scene(root,ancho,alto));
-        stage.show();
-
+        cambiarEscena(actionEvent, "pantalla_principal.fxml");
     }
     public void onInventarioButtonClick(ActionEvent actionEvent) throws IOException {
-
-        // Cargo el FXML de productos
-        Parent root = FXMLLoader.load(getClass().getResource("pantalla_inventario.fxml"));
-
-        // Obtengo el Stage actual a partir del evento
-        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        double ancho = stage.getWidth();
-        double alto = stage.getHeight();
-
-        // Cambio la escena
-        stage.setScene(new Scene(root,ancho,alto));
-        stage.show();
+        cambiarEscena(actionEvent, "pantalla_inventario.fxml");
     }
 
 
     public void onClienteButtonClick(ActionEvent actionEvent) throws IOException {
-        // Cargo el FXML de productos
-        Parent root = FXMLLoader.load(getClass().getResource("pantalla_clientes.fxml"));
-
-        // Obtengo el Stage actual a partir del evento
-        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        double ancho = stage.getWidth();
-        double alto = stage.getHeight();
-
-        // Cambio la escena
-        stage.setScene(new Scene(root,ancho,alto));
-        stage.show();
+        cambiarEscena(actionEvent, "pantalla_clientes.fxml");
     }
 
     public void onVentasButtonClick(ActionEvent actionEvent) throws IOException {
-        // Cargo el FXML de productos
-        Parent root = FXMLLoader.load(getClass().getResource("pantalla_venta.fxml"));
-
-        // Obtengo el Stage actual a partir del evento
-        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        double ancho = stage.getWidth();
-        double alto = stage.getHeight();
-
-        // Cambio la escena
-        stage.setScene(new Scene(root,ancho,alto));
-        stage.show();
+        cambiarEscena(actionEvent, "pantalla_venta.fxml");
     }
 
     public void onAgregarButtonClick(ActionEvent actionEvent) throws IOException {
@@ -134,5 +83,12 @@ public class ProductosControlador implements Initializable {
 
         comboPromo.getItems().addAll(true,false);
 
+    }
+
+    private void cambiarEscena(ActionEvent actionEvent, String fxml) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource(fxml));
+        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
+        stage.show();
     }
 }
