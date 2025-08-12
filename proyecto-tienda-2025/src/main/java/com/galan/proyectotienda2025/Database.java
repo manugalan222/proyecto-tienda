@@ -1,10 +1,13 @@
 package com.galan.proyectotienda2025;
 
+import javafx.collections.ObservableList;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,41 +41,54 @@ public class Database {
                 );
             """);
 
-            stmt.execute("""
+          stmt.execute("""
                 CREATE TABLE IF NOT EXISTS cliente (
                     id IDENTITY PRIMARY KEY,
                     nombre VARCHAR(50) NOT NULL,
                     apellido VARCHAR(50) NOT NULL,
-                    telefono VARCHAR(20) NOT NULL
+                    telefono VARCHAR(20) NOT NULL,
+                    dni VARCHAR(20) UNIQUE NOT NULL
+                );
+           """);
+
+            stmt.execute("""
+            CREATE TABLE IF NOT EXISTS venta (
+                id IDENTITY PRIMARY KEY,
+                cliente_id BIGINT NOT NULL,
+                monto_total DECIMAL(10,2) NOT NULL,
+                saldo_pendiente DECIMAL(10,2) NOT NULL,
+                es_a_cuotas BOOLEAN NOT NULL,
+                medio_pago VARCHAR(30) NOT NULL,
+                fecha_compra TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (cliente_id) REFERENCES cliente(id)
                 );
             """);
 
-            stmt.execute("""    
-                CREATE TABLE IF NOT EXISTS detalle_venta (
-                    id IDENTITY PRIMARY KEY,
-                    cliente_id BIGINT NOT NULL,
-                    producto_id VARCHAR(100) NOT NULL,
-                    monto_total DECIMAL(10,2) NOT NULL,
-                    saldo_pendiente DECIMAL(10,2) NOT NULL,
-                    es_a_cuotas BOOLEAN NOT NULL,
-                    medio_pago VARCHAR(30) NOT NULL,
-                    fecha_compra TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    FOREIGN KEY (cliente_id) REFERENCES cliente(id),
-                    FOREIGN KEY (producto_id) REFERENCES productos(id)
-                );
-                """);
 
             stmt.execute("""
-                    CREATE TABLE IF NOT EXISTS cuotas (
-                        id IDENTITY PRIMARY KEY,
-                        detalle_venta_id BIGINT NOT NULL,
-                        monto_cuota DECIMAL(10,2) NOT NULL,
-                        fecha_vencimiento DATE,
-                        fecha_pago TIMESTAMP,
-                        estado VARCHAR(20) NOT NULL,
-                        FOREIGN KEY (detalle_venta_id) REFERENCES detalle_venta(id)
-                    );
-                """);
+            CREATE TABLE IF NOT EXISTS linea_de_venta (
+                venta_id BIGINT NOT NULL,
+                producto_id VARCHAR(100) NOT NULL,
+                cantidad INT NOT NULL,
+                subtotal DECIMAL(10,2) NOT NULL,
+                PRIMARY KEY (venta_id, producto_id),
+                FOREIGN KEY (venta_id) REFERENCES venta(id),
+                FOREIGN KEY (producto_id) REFERENCES productos(id)
+                );
+            """);
+
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS cuotas (
+                    id IDENTITY PRIMARY KEY,
+                    venta_id BIGINT NOT NULL,
+                    monto_cuota DECIMAL(10,2) NOT NULL,
+                    fecha_vencimiento DATE NOT NULL,
+                    fecha_pago TIMESTAMP,
+                    estado VARCHAR(20) NOT NULL,
+                    tipo_cuota VARCHAR(20) NOT NULL,
+                    FOREIGN KEY (venta_id) REFERENCES venta(id)
+                );
+            """);
 
             System.out.println("Base de datos inicializada.");
 
@@ -106,48 +122,70 @@ public class Database {
         }
     }
 
-    public static void registrarVentaEnCuotas(long cliente_id, String producto_id, int cantidad, double monto_total, int numero_cuotas) {
+    public static void insertarVenta(long clienteId, ObservableList<VentaItem> carrito, String medioPago, boolean esEnCuotas, int numCuotas, String tipoCuota) {
         Connection conn = null;
         try {
             conn = connect();
             conn.setAutoCommit(false); // Inicia la transacción
 
-            // Paso 1: Insertar en detalle_venta y obtener el ID de la venta
-            String sqlVenta = "INSERT INTO detalle_venta (cliente_id, producto_id, cantidad, monto_total, saldo_pendiente, es_a_cuotas) " +
-                    "VALUES (?, ?, ?, ?, ?, ?)";
+            // 1. Insertar el registro principal de la venta
+            String sqlVenta = "INSERT INTO venta (cliente_id, monto_total, saldo_pendiente, es_a_cuotas, medio_pago) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement pstmtVenta = conn.prepareStatement(sqlVenta, Statement.RETURN_GENERATED_KEYS);
-            pstmtVenta.setLong(1, cliente_id);
-            pstmtVenta.setString(2, producto_id);
-            pstmtVenta.setInt(3, cantidad);
-            pstmtVenta.setDouble(4, monto_total);
-            pstmtVenta.setDouble(5, monto_total); // Saldo pendiente es el monto total al inicio
-            pstmtVenta.setBoolean(6, true);
+
+            double montoTotalVenta = carrito.stream().mapToDouble(VentaItem::getSubtotal).sum();
+            double saldoPendiente = esEnCuotas ? montoTotalVenta : 0.0;
+
+            pstmtVenta.setLong(1, clienteId);
+            pstmtVenta.setDouble(2, montoTotalVenta);
+            pstmtVenta.setDouble(3, saldoPendiente);
+            pstmtVenta.setBoolean(4, esEnCuotas);
+            pstmtVenta.setString(5, medioPago);
             pstmtVenta.executeUpdate();
 
-            ResultSet rs = pstmtVenta.getGeneratedKeys();
-            long id_venta = -1;
-            if (rs.next()) {
-                id_venta = rs.getLong(1);
+            ResultSet rsVenta = pstmtVenta.getGeneratedKeys();
+            long ventaId = -1;
+            if (rsVenta.next()) {
+                ventaId = rsVenta.getLong(1);
             }
 
-            // Paso 2: Generar e insertar cada cuota en la tabla 'cuotas'
-            double monto_cuota = monto_total / numero_cuotas;
-            String sqlCuota = "INSERT INTO cuotas (detalle_venta_id, monto_cuota, estado, fecha_vencimiento) VALUES (?, ?, 'Pendiente', ?)";
-            PreparedStatement pstmtCuota = conn.prepareStatement(sqlCuota);
-            java.util.Date fecha_vencimiento_base = new java.util.Date();
-            for (int i = 0; i < numero_cuotas; i++) {
-                java.util.Calendar cal = java.util.Calendar.getInstance();
-                cal.setTime(fecha_vencimiento_base);
-                cal.add(java.util.Calendar.MONTH, i + 1); // Vence cada mes
-                pstmtCuota.setLong(1, id_venta);
-                pstmtCuota.setDouble(2, monto_cuota);
-                pstmtCuota.setDate(3, new java.sql.Date(cal.getTimeInMillis()));
-                pstmtCuota.addBatch();
+            // 2. Insertar cada producto del carrito en la tabla 'linea_de_venta'
+            String sqlLinea = "INSERT INTO linea_de_venta (venta_id, producto_id, cantidad, subtotal) VALUES (?, ?, ?, ?)";
+            PreparedStatement pstmtLinea = conn.prepareStatement(sqlLinea);
+
+            for (VentaItem item : carrito) {
+                pstmtLinea.setLong(1, ventaId);
+                pstmtLinea.setString(2, item.getId());
+                pstmtLinea.setInt(3, item.getCantidad());
+                pstmtLinea.setDouble(4, item.getSubtotal());
+                pstmtLinea.addBatch();
             }
-            pstmtCuota.executeBatch();
+            pstmtLinea.executeBatch();
+
+            // 3. Si es a cuotas, generar los registros en la tabla 'cuotas'
+            if (esEnCuotas) {
+                double montoCuota = montoTotalVenta / numCuotas;
+                // La consulta se ha modificado para incluir 'fecha_vencimiento'
+                String sqlCuota = "INSERT INTO cuotas (venta_id, monto_cuota, fecha_vencimiento, estado, tipo_cuota) VALUES (?, ?, ?, ?, ?)";
+                PreparedStatement pstmtCuota = conn.prepareStatement(sqlCuota);
+
+                LocalDate fechaVencimiento = LocalDate.now();
+                int intervaloDias = (int) Math.round((double) 200 / numCuotas);
+
+                for (int i = 0; i < numCuotas; i++) {
+                    fechaVencimiento = fechaVencimiento.plusDays(intervaloDias);
+
+                    pstmtCuota.setLong(1, ventaId);
+                    pstmtCuota.setDouble(2, montoCuota);
+                    pstmtCuota.setDate(3, Date.valueOf(fechaVencimiento)); // Se añade la fecha de vencimiento
+                    pstmtCuota.setString(4, "Pendiente");
+                    pstmtCuota.setString(5, tipoCuota);
+                    pstmtCuota.addBatch();
+                }
+                pstmtCuota.executeBatch();
+            }
 
             conn.commit();
-            System.out.println("Venta en cuotas registrada.");
+            System.out.println("Venta registrada con éxito. Venta ID: " + ventaId);
 
         } catch (SQLException e) {
             if (conn != null) {
@@ -157,6 +195,7 @@ public class Database {
                     ex.printStackTrace();
                 }
             }
+            System.err.println("Error al registrar la venta: " + e.getMessage());
             e.printStackTrace();
         } finally {
             if (conn != null) {
@@ -201,6 +240,8 @@ public class Database {
         return productos;
     }
 
+    
+    
     public static void actualizarProducto(String id, String nombre, double precioCompra, double precioVenta, String temporada,
                                           boolean promocionable, String descripcion, String marca, int stock) {
         String sql = "UPDATE productos SET nombre=?, precio_compra=?, precio_venta=?, temporada_producto=?, promocionable=?, descripcion=?, marca=?, stock=? WHERE id = ?";
@@ -248,6 +289,8 @@ public class Database {
         }
     }
 
+
+
     public static Producto obtenerProductoPorId(String id) {
         String sql = "SELECT * FROM productos WHERE id=?";
         Producto producto = null;
@@ -277,7 +320,80 @@ public class Database {
         return producto;
     }
 
-    // Clase auxiliar para mapear resultados
+
+    public static Cliente obtenerClientePorDni(String dni) {
+        String sql = "SELECT * FROM cliente WHERE dni=?";
+        Cliente cliente = null;
+
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, dni);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    cliente = new Cliente(
+                            rs.getLong("id"),
+                            rs.getString("nombre"),
+                            rs.getString("apellido"),
+                            rs.getString("telefono"),
+                            rs.getString("dni")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return cliente;
+    }
+
+    public static void insertarCliente(String nombre, String apellido, String telefono, String dni) {
+        // La lista de columnas no incluye 'id' porque es autoincremental.
+        // El orden aquí debe ser consistente con la asignación de parámetros.
+        String sql = "INSERT INTO cliente (nombre, apellido, telefono, dni) " +
+                "VALUES (?, ?, ?, ?)";
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            // Asignación de parámetros
+            pstmt.setString(1, nombre);
+            pstmt.setString(2, apellido);
+            pstmt.setString(3, telefono);
+            pstmt.setString(4, dni);
+
+            int filasAfectadas = pstmt.executeUpdate();
+            if (filasAfectadas > 0) {
+                System.out.println("Cliente " + nombre + " " + apellido + " agregado exitosamente.");
+            } else {
+                System.out.println("Error: No se pudo agregar el cliente.");
+            }
+
+        } catch (SQLException e) {
+            // Esta es la parte crucial: aquí se mostrará la razón del error.
+            System.err.println("Error al insertar cliente en la base de datos: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+
+    public static class Cliente {
+        public long id;
+        public String nombre;
+        public String apellido;
+        public String telefono;
+        public String dni;
+
+        public Cliente(long id, String nombre, String apellido, String telefono, String dni) {
+            this.id = id;
+            this.nombre = nombre;
+            this.apellido = apellido;
+            this.telefono = telefono;
+            this.dni = dni;
+        }
+    }
+
+
+        // Clase auxiliar para mapear resultados
     public static class Producto {
         public String id;
         public String nombre;
@@ -300,41 +416,6 @@ public class Database {
             this.descripcion = descripcion;
             this.marca = marca;
             this.stock = stock;
-        }
-
-        // getters (nombres usados por PropertyValueFactory)
-        public String getId() { return id; }
-        public String getNombre() { return nombre; }
-        public String getDescripcion() { return descripcion; }
-        public double getPrecioCompra() { return precioCompra; }
-        public double getPrecioVenta() { return precioVenta; }
-        public String getMarca() { return marca; }
-        public String getTemporada() { return temporada; }
-        public boolean getPromocionable() { return promocionable; }
-        public int getStock() { return stock; }
-
-        public static void insertarDetalleVenta(String producto_id, int cantidad, String nombre, double precioCompra, double precioVenta, String temporada,
-                                            boolean promocionable, String descripcion, String marca, int stock) {
-            String sql = "INSERT INTO productos (id, nombre, precio_compra, precio_venta, temporada_producto, promocionable, descripcion, marca, stock) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            try (Connection conn = connect();
-                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-                pstmt.setString(2, nombre);
-                pstmt.setDouble(3, precioCompra);
-                pstmt.setDouble(4, precioVenta);
-                pstmt.setString(5, temporada);
-                pstmt.setBoolean(6, promocionable);
-                pstmt.setString(7, descripcion);
-                pstmt.setString(8, marca);
-                pstmt.setInt(9, stock);
-
-                pstmt.executeUpdate();
-                System.out.println("Producto agregado.");
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
 
         @Override

@@ -15,6 +15,10 @@ import java.io.IOException;
 
 public class VentaControlador {
 
+    @FXML private TextField txtDniCliente;
+    @FXML private CheckBox chkCuotas;
+    @FXML ComboBox<String> comboTipoCuotas;
+    @FXML private TextField txtNumCuotas;
     @FXML private TextField txtProductoId;
     @FXML private TableView<VentaItem> tablaProductos;
     @FXML private TableColumn<VentaItem, String> columnaId;
@@ -40,6 +44,39 @@ public class VentaControlador {
 
         comboMetodoPago.setItems(FXCollections.observableArrayList("Efectivo", "Tarjeta", "Transferencia"));
         comboMetodoPago.getSelectionModel().selectFirst();
+
+        comboTipoCuotas.setItems(FXCollections.observableArrayList("Diaria", "Semanal", "Mensual"));
+        comboTipoCuotas.setDisable(true);
+
+        chkCuotas.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            comboTipoCuotas.setDisable(!newValue);
+            if (newValue) {
+                comboTipoCuotas.getSelectionModel().selectFirst();
+            } else {
+                txtNumCuotas.setText("");
+                comboTipoCuotas.getSelectionModel().clearSelection();
+            }
+        });
+
+        // Listener para el ComboBox 'Tipo de Cuota'
+        comboTipoCuotas.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                switch (newValue) {
+                    case "Diaria":
+                        txtNumCuotas.setText("200");
+                        break;
+                    case "Semanal":
+                        txtNumCuotas.setText("28"); // 200 días / 7 días
+                        break;
+                    case "Mensual":
+                        txtNumCuotas.setText("3"); // De acuerdo a tu regla
+                        break;
+                    default:
+                        txtNumCuotas.setText("");
+                        break;
+                }
+            }
+        });
     }
 
     @FXML
@@ -72,9 +109,86 @@ public class VentaControlador {
 
     @FXML
     public void onFinalizarVentaClick() {
+        if (carrito.isEmpty()) {
+            mostrarAlerta("No hay productos en la venta.");
+            return;
+        }
+
+        String dni = txtDniCliente.getText().trim();
+        if (dni.isEmpty()) {
+            mostrarAlerta("Por favor, ingrese el DNI del cliente.");
+            return;
+        }
+
+        Database.Cliente cliente = Database.obtenerClientePorDni(dni);
+
+        if (cliente == null) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Cliente No Encontrado");
+            alert.setHeaderText("El cliente con DNI " + dni + " no está registrado.");
+            alert.setContentText("¿Desea registrar un nuevo cliente ahora?");
+
+            ButtonType botonSi = new ButtonType("Sí");
+            ButtonType botonNo = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
+            alert.getButtonTypes().setAll(botonSi, botonNo);
+
+            alert.showAndWait().ifPresent(result -> {
+                if (result == botonSi) {
+                    mostrarFormularioRegistroCliente(dni);
+                }
+            });
+            return;
+        }
+
+        long clienteId = cliente.id;
+        String medioPago = comboMetodoPago.getValue();
+        boolean esEnCuotas = chkCuotas.isSelected();
+        String tipoCuotas = comboTipoCuotas.getValue();
+
+        int numCuotas = 0;
+        if (esEnCuotas) {
+            try {
+                numCuotas = Integer.parseInt(txtNumCuotas.getText().trim());
+                if (numCuotas <= 0) {
+                    mostrarAlerta("Número de cuotas inválido.");
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                mostrarAlerta("Número de cuotas inválido.");
+                return;
+            }
+        }
+
+        // Llamada al metodo unificado de la base de datos
+        Database.insertarVenta(clienteId, carrito, medioPago, esEnCuotas, numCuotas, tipoCuotas);
+        mostrarAlerta("Venta registrada con éxito.");
+
+        // Limpiar el formulario después de la venta
+        carrito.clear();
+        calcularPrecioFinal();
+        txtDniCliente.clear();
+        txtNumCuotas.clear();
     }
 
+    private void mostrarFormularioRegistroCliente(String dni) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("pantalla_cliente.fxml"));
+            Parent root = fxmlLoader.load();
 
+            // Pasamos el DNI al controlador del nuevo formulario
+            ClienteControlador clienteControlador = fxmlLoader.getController();
+            clienteControlador.setDni(dni);
+
+            Stage stage = new Stage();
+            stage.setTitle("Registrar Nuevo Cliente");
+            stage.setScene(new Scene(root));
+            stage.showAndWait(); // showAndWait para esperar el registro antes de continuar
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarAlerta("Error al cargar el formulario de registro de cliente.");
+        }
+    }
 
     private double calcularPrecioFinal() {
         double total = carrito.stream().mapToDouble(VentaItem::getSubtotal).sum();

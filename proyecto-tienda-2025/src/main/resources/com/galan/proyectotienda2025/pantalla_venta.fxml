@@ -10,11 +10,13 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
+<?import javafx.geometry.Insets?>
 
+<?import javafx.scene.control.CheckBox?>
 <BorderPane prefHeight="480.0" prefWidth="800.0" stylesheets="@estilos.css"
             xmlns="http://javafx.com/javafx/24.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
-                fx:controller="com.galan.proyectotienda2025.VentaControlador">
+            fx:controller="com.galan.proyectotienda2025.VentaControlador">
 
     <!-- Barra lateral -->
     <left>
@@ -55,16 +57,21 @@
                     </columns>
                 </TableView>
 
-                <!-- Método de pago -->
+                <!-- Metodo de pago -->
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <Label text="Método de Pago:"/>
                     <ComboBox fx:id="comboMetodoPago" prefWidth="200"/>
+                    <CheckBox fx:id="chkCuotas" text="Venta en Cuotas" />
+                    <ComboBox fx:id="comboTipoCuotas" promptText="Tipo de Cuota" />
+                    <TextField fx:id="txtNumCuotas" promptText="Número de cuotas" disable="true" />
                 </HBox>
 
                 <!-- Descuento -->
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <Label text="Descuento (%):"/>
                     <TextField fx:id="txtDescuento" promptText="0" prefWidth="100"/>
+                    <Label text="Datos del cliente"/>
+                    <TextField fx:id="txtDniCliente" promptText="DNI" prefWidth="150"/>
                 </HBox>
 
                 <!-- Precio final -->
@@ -75,7 +82,7 @@
 
                 <!-- Botones -->
                 <HBox spacing="10" alignment="CENTER_RIGHT">
-                    <Button text="Finalizar Venta" styleClass="primary-btn"/>
+                    <Button text="Finalizar Venta" styleClass="primary-btn" onAction="#onFinalizarVentaClick"/>
                     <Button text="Cancelar" styleClass="danger-btn"/>
                 </HBox>
 
@@ -83,3 +90,5 @@
         </VBox>
     </center>
 </BorderPane>
+
+

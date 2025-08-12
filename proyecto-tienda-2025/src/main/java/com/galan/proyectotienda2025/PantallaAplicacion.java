@@ -23,7 +23,7 @@ public class PantallaAplicacion extends Application {
 
         FXMLLoader fxmlLoader = new FXMLLoader(PantallaAplicacion.class.getResource("pantalla_principal.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 800, 600);
-        //scene.getStylesheets().add(PantallaControlador.class.getResource("estilos.css").toExternalForm());
+        scene.getStylesheets().add(PantallaControlador.class.getResource("estilos.css").toExternalForm());
         stage.setTitle("MVC!");
         stage.setScene(scene);
         stage.show();
