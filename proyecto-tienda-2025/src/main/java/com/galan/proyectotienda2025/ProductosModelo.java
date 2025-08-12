@@ -8,6 +8,7 @@ public class ProductosModelo {
                                   String productoNombre, String productoDesc, Boolean promoValor) {
         Database.insertarProducto(productoId, productoNombre, precioCompra, precioVenta, temporadaValor, promoValor, productoDesc, marcaValor,stockValor);
         //Database.listarProductos();
-
+        System.out.println("Nashe");
     }
+
 }
