@@ -10,6 +10,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class ClientesControlador {
+
+
     public void onInventarioButtonClick(ActionEvent actionEvent) throws IOException {
 
         // Cargo el FXML de productos

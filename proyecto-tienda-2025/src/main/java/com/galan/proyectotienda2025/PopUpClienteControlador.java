@@ -6,7 +6,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class ClienteControlador {
+public class PopUpClienteControlador {
 
     @FXML private TextField txtDni;
     @FXML private TextField txtNombre;

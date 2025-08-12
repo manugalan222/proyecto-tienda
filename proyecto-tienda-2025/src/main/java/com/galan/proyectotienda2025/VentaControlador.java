@@ -10,7 +10,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 
 public class VentaControlador {
@@ -176,8 +175,8 @@ public class VentaControlador {
             Parent root = fxmlLoader.load();
 
             // Pasamos el DNI al controlador del nuevo formulario
-            ClienteControlador clienteControlador = fxmlLoader.getController();
-            clienteControlador.setDni(dni);
+            PopUpClienteControlador popUpClienteControlador = fxmlLoader.getController();
+            popUpClienteControlador.setDni(dni);
 
             Stage stage = new Stage();
             stage.setTitle("Registrar Nuevo Cliente");
@@ -190,7 +189,7 @@ public class VentaControlador {
         }
     }
 
-    private double calcularPrecioFinal() {
+    private void calcularPrecioFinal() {
         double total = carrito.stream().mapToDouble(VentaItem::getSubtotal).sum();
         double descuento = 0;
         try {
@@ -201,7 +200,6 @@ public class VentaControlador {
 
         total -= total * (descuento / 100);
         txtPrecioFinal.setText(String.format("%.2f", total));
-        return total;
     }
 
     private void mostrarAlerta(String mensaje) {
