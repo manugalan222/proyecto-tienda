@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" spacing="15.0" prefHeight="300.0" prefWidth="400.0"
+      xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.galan.proyectotienda2025.ClienteControlador">
+    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+    <Label text="Registrar Nuevo Cliente" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+    <TextField fx:id="txtDni" promptText="DNI" editable="false" />
+    <TextField fx:id="txtNombre" promptText="Nombre" />
+    <TextField fx:id="txtApellido" promptText="Apellido" />
+    <TextField fx:id="txtTelefono" promptText="Teléfono" />
+
+    <Button text="Guardar Cliente" onAction="#onGuardarClienteClick" style="-fx-pref-width: 150px;"/>
+</VBox>

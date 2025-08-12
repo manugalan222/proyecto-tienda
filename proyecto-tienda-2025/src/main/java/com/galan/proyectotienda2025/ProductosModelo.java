@@ -1,6 +1,4 @@
-package com.galan.proyectotienda2025.modelo;
-
-import com.galan.proyectotienda2025.Database;
+package com.galan.proyectotienda2025;
 
 public class ProductosModelo {
     Database db;
