@@ -27,7 +27,6 @@ public class InventarioControlador implements Initializable {
     @FXML private TableColumn<Producto, Double> colVenta;
     @FXML private TableColumn<Producto, String> colMarca;
     @FXML private TableColumn<Producto, String> colTemporada;
-    @FXML private TableColumn<Producto, String> colTipo;
     @FXML private TableColumn<Producto, Integer> colStock;
     @FXML private TableColumn<Producto, Boolean> colPromo;
 

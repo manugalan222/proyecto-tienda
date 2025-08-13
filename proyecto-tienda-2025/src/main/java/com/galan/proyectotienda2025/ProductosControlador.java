@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
@@ -30,16 +31,18 @@ public class ProductosControlador implements Initializable {
     @FXML private ComboBox<Boolean> comboPromo;
     @FXML private Spinner<Integer> spinnerStock;
 
-    @FXML private TableView<Database.Producto> tablaProductos;
-    @FXML private TableColumn<Database.Producto, String> colId;
-    @FXML private TableColumn<Database.Producto, String> colNombre;
-    @FXML private TableColumn<Database.Producto, String> colDesc;
-    @FXML private TableColumn<Database.Producto, Double> colCompra;
-    @FXML private TableColumn<Database.Producto, Double> colVenta;
-    @FXML private TableColumn<Database.Producto, String> colMarca;
-    @FXML private TableColumn<Database.Producto, String> colTemporada;
-    @FXML private TableColumn<Database.Producto, Integer> colStock;
-    @FXML private TableColumn<Database.Producto, Boolean> colPromo;
+    @FXML private TableView<Producto> tablaProductos;
+    @FXML private TableColumn<Producto, String> colId;
+    @FXML private TableColumn<Producto, String> colNombre;
+    @FXML private TableColumn<Producto, String> colDesc;
+    @FXML private TableColumn<Producto, Double> colCompra;
+    @FXML private TableColumn<Producto, Double> colVenta;
+    @FXML private TableColumn<Producto, String> colMarca;
+    @FXML private TableColumn<Producto, String> colTemporada;
+    @FXML private TableColumn<Producto, Integer> colStock;
+    @FXML private TableColumn<Producto, Boolean> colPromo;
+
+    private ObservableList<Producto> productosObservable = FXCollections.observableArrayList(Database.listarProductos());
 
     public void onInicioButtonClick(ActionEvent actionEvent) throws IOException {
         cambiarEscena(actionEvent, "pantalla_principal.fxml");
@@ -61,6 +64,19 @@ public class ProductosControlador implements Initializable {
         cambiarEscena(actionEvent, "pantalla_cuotas.fxml");
     }
 
+    public void onResetButtonClick(ActionEvent actionEvent) {
+        txtProductoId.clear();
+        txtProductoNombre.clear();
+        txtProductoDesc.clear();
+        txtPrecioCompra.clear();
+        txtPrecioVenta.clear();
+        comboTemporada.getSelectionModel().clearSelection();
+        comboMarca.getSelectionModel().clearSelection();
+        comboPromo.getSelectionModel().clearSelection();
+        spinnerStock.getValueFactory().setValue(0);
+    }
+
+
     public void onAgregarButtonClick(ActionEvent actionEvent) throws IOException {
 
         /* Recibe los valores para la base de datos*/
@@ -75,10 +91,44 @@ public class ProductosControlador implements Initializable {
         String productoDesc = txtProductoDesc.getText();
 
         productosModelo.agregarProductoBd(temporadaValor,marcaValor,stockValor,precioCompra,precioVenta,productoId,productoNombre,productoDesc,promoValor);
+
+        actualizarTabla();
+
+    }
+
+    public void onBorrarButtonClick(ActionEvent actionEvent) throws IOException {
+        Database.eliminarProducto(txtProductoId.getText());
+        actualizarTabla();
+    }
+
+    public void onActualizarButtonClick(ActionEvent actionEvent) throws IOException {
+
+        Database.actualizarProducto(txtProductoId.getText(), txtProductoNombre.getText(),Double.parseDouble(txtPrecioCompra.getText()),
+                Double.parseDouble(txtPrecioVenta.getText()),comboTemporada.getValue(), comboPromo.getValue(),
+                txtProductoDesc.getText(),comboMarca.getValue(),spinnerStock.getValue());
+
+        actualizarTabla();
+    }
+
+    //Esta es para actualizar el contenido de las tablas cuando se borran tablas o actualizan ya tu sabe
+    public void actualizarTabla(){
+        productosObservable.clear();
+        productosObservable.addAll(Database.listarProductos());
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        comboTemporada.getItems().addAll("Disponible", "No disponible", "En pedido");
+
+        comboMarca.getItems().addAll("Sin marca");
+
+        SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1000, 0, 1);
+
+        spinnerStock.setValueFactory(valueFactory);
+
+        spinnerStock.setEditable(true);
+
+        comboPromo.getItems().addAll(true,false);
 
         // Configurar cómo cada columna obtiene su valor
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -92,27 +142,13 @@ public class ProductosControlador implements Initializable {
         colDesc.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
 
         // Traer los datos de la BD y mostrarlos
-        ObservableList<Database.Producto> productosObservable = FXCollections.observableArrayList(Database.listarProductos());
-
         tablaProductos.setItems(productosObservable);
 
-        // Cargar opciones para Estado
-        comboTemporada.getItems().addAll("Disponible", "No disponible", "En pedido");
-
-        // Cargar opciones para Tipo
-
-        // Cargar opciones para Marca
-        comboMarca.getItems().addAll("Sin marca");
-
-        // Valor mínimo 0, máximo 1000, valor inicial 0, y paso de 1 en 1
-        SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1000, 0, 1);
-
-        spinnerStock.setValueFactory(valueFactory);
-
-        //usuario escriba texto inválido
-        spinnerStock.setEditable(true);
-
-        comboPromo.getItems().addAll(true,false);
+        tablaProductos.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                cargarProductoEnCampos(newSelection);
+            }
+        });
 
     }
 
@@ -122,5 +158,18 @@ public class ProductosControlador implements Initializable {
         stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
         stage.show();
     }
+
+    private void cargarProductoEnCampos(Producto producto) {
+        txtProductoId.setText(producto.getId());
+        txtProductoNombre.setText(producto.getNombre());
+        txtProductoDesc.setText(producto.getDescripcion());
+        txtPrecioCompra.setText(String.valueOf(producto.getPrecioCompra()));
+        txtPrecioVenta.setText(String.valueOf(producto.getPrecioVenta()));
+        comboTemporada.setValue(producto.getTemporada());
+        comboMarca.setValue(producto.getMarca());
+        comboPromo.setValue(producto.isPromocionable());
+        spinnerStock.getValueFactory().setValue(producto.getStock());
+    }
+
 
 }

@@ -35,7 +35,7 @@
 
                 <TextField fx:id="txtProductoId" promptText="ID" maxWidth="Infinity" />
 
-                <ComboBox fx:id="comboTemporada"  promptText="Temporada" maxWidth="Infinity"/>
+                <ComboBox fx:id="comboTemporada"  promptText="Disponibilidad" maxWidth="Infinity"/>
                 <ComboBox fx:id="comboMarca" promptText="Marca" maxWidth="Infinity"/>
                 <ComboBox fx:id="comboPromo" promptText="Promocionable" maxWidth="Infinity"/>
 
@@ -52,9 +52,9 @@
 
                 <HBox spacing="10" alignment="CENTER" maxWidth="Infinity">
                     <Button text="Añadir" fx:id="btnAnadir" maxWidth="Infinity" onAction="#onAgregarButtonClick"/>
-                    <Button text="Resetear" fx:id="btnResetear" maxWidth="Infinity" />
-                    <Button text="Borrar" fx:id="btnBorrar" maxWidth="Infinity"/>
-                    <Button text="Actualizar" fx:id="btnActualizar" maxWidth="Infinity" />
+                    <Button text="Resetear" fx:id="btnResetear" maxWidth="Infinity" onAction="#onResetButtonClick" />
+                    <Button text="Borrar" fx:id="btnBorrar" maxWidth="Infinity" onAction="#onBorrarButtonClick"/>
+                    <Button text="Actualizar" fx:id="btnActualizar" maxWidth="Infinity" onAction= "#onActualizarButtonClick" />
                 </HBox>
 
             </VBox>
@@ -62,7 +62,7 @@
             <!-- Derecha: tabla productos -->
             <VBox spacing="10" prefWidth="550" VBox.vgrow="ALWAYS">
                 <Text text="Lista de Productos" styleClass="titulo" />
-                <TableView fx:id="tablaProductos2" VBox.vgrow="ALWAYS" prefHeight="Infinity">
+                <TableView fx:id="tablaProductos" VBox.vgrow="ALWAYS">
                     <columns>
                         <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
                         <TableColumn fx:id="colNombre" text="Nombre" prefWidth="150"/>
