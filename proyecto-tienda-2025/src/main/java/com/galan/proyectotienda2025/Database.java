@@ -431,6 +431,34 @@ public class Database {
         return resumenVentas;
     }
 
+    public static void RegistrarPagoCuota(long id){
+
+        String sql = """
+            UPDATE cuotas
+            SET estado = 'Pagada', fecha_pago = CURRENT_TIMESTAMP()
+            WHERE id = ?;
+        """;
+
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setLong(1, id);
+
+            // Ejecutamos la consulta. executeUpdate() devuelve el número de filas afectadas.
+            int filasAfectadas = pstmt.executeUpdate();
+
+            if (filasAfectadas > 0) {
+                System.out.println("Pago de cuota con ID " + id + " registrado con éxito.");
+            } else {
+                System.out.println("No se encontró ninguna cuota con el ID " + id + ".");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al registrar el pago de la cuota: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+
     public static List<ResumenVenta> buscarResumenVentasPorDni(String dni) {
         List<ResumenVenta> resumenEncontrados = new ArrayList<>();
         String sql = """
