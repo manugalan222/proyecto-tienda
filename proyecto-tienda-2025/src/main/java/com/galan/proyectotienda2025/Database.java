@@ -333,6 +333,36 @@ public class Database {
         return producto;
     }
 
+    public static List<Producto> obtenerProductoBajoStock() {
+        List<Producto> productos = new ArrayList<>();
+
+        String sql = "SELECT * FROM productos WHERE stock < 5";
+
+        try (Connection conn = connect();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Producto p = new Producto(
+                        rs.getString("id"),
+                        rs.getString("nombre"),
+                        rs.getDouble("precio_compra"),
+                        rs.getDouble("precio_venta"),
+                        rs.getString("temporada_producto"),
+                        rs.getBoolean("promocionable"),
+                        rs.getString("descripcion"),
+                        rs.getString("marca"),
+                        rs.getInt("stock")
+                );
+                productos.add(p);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return productos;
+    }
+
 
     public static Cliente obtenerClientePorDni(String dni) {
         String sql = "SELECT * FROM cliente WHERE dni=?";
