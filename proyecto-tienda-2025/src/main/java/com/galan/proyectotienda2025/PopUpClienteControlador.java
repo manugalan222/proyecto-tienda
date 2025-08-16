@@ -17,6 +17,18 @@ public class PopUpClienteControlador {
     public void setDni(String dni) {
         txtDni.setText(dni);
     }
+    private boolean esEdicion = false;
+    private Cliente clienteActual;
+
+    public void setClienteParaEdicion(Cliente cliente) {
+        this.clienteActual = cliente;
+        this.esEdicion = true;
+
+        txtNombre.setText(cliente.getNombre());
+        txtApellido.setText(cliente.getApellido());
+        txtDni.setText(cliente.getDni());
+        txtTelefono.setText(cliente.getTelefono());
+    }
 
     @FXML
     public void onGuardarClienteClick() {
@@ -25,12 +37,18 @@ public class PopUpClienteControlador {
         String apellido = txtApellido.getText().trim();
         String telefono = txtTelefono.getText().trim();
 
+        Long id = clienteActual.getId();
         if (nombre.isEmpty() || apellido.isEmpty() || telefono.isEmpty()) {
             mostrarAlerta("Todos los campos son obligatorios.");
             return;
         }
 
-        Database.insertarCliente(nombre, apellido, telefono, dni);
+        if(!esEdicion){
+            Database.insertarCliente(nombre, apellido, telefono, dni);
+        }else{
+            Database.actualizarCliente(id,nombre,apellido,dni,telefono);
+        }
+
         mostrarAlerta("Cliente registrado con éxito.");
 
         // Cierra la ventana actual
@@ -43,4 +61,11 @@ public class PopUpClienteControlador {
         alert.setContentText(mensaje);
         alert.showAndWait();
     }
+
+    /*esto es re contra mejorable.. pero bueno, por el momento */
+    public void setEsEdicion(boolean esEdicion){
+        this.esEdicion = esEdicion;
+    }
+
+
 }

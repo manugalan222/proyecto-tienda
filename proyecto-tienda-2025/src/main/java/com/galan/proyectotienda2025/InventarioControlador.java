@@ -28,7 +28,7 @@ public class InventarioControlador implements Initializable {
     @FXML private TableColumn<Producto, String> colMarca;
     @FXML private TableColumn<Producto, String> colTemporada;
     @FXML private TableColumn<Producto, Integer> colStock;
-    @FXML private TableColumn<Producto, Boolean> colPromo;
+    @FXML private TableColumn<Producto, String> colPromo;
 
     private ObservableList<Producto> productosObservable = FXCollections.observableArrayList(Database.listarProductos());
 

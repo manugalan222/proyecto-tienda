@@ -27,16 +27,22 @@
 
     <!-- Contenido principal -->
     <center>
+
+        <HBox spacing="10">
+            <TextField fx:id="txtBuscar" promptText="Buscar por ID, nombre o marca" HBox.hgrow="ALWAYS"/>
+            <Button text="Limpiar"/>
+        </HBox>
+
         <HBox spacing="15" style="-fx-padding: 15;" prefWidth="Infinity" prefHeight="Infinity">
 
-            <!-- Izquierda: formulario e imagen -->
+            <!--formulario e imagen -->
             <VBox spacing="15" alignment="TOP_CENTER" prefWidth="350">
                 <Text text="Producto" styleClass="titulo" />
 
                 <TextField fx:id="txtProductoId" promptText="ID" maxWidth="Infinity" />
 
                 <ComboBox fx:id="comboTemporada"  promptText="Disponibilidad" maxWidth="Infinity"/>
-                <ComboBox fx:id="comboMarca" promptText="Marca" maxWidth="Infinity"/>
+                <TextField fx:id="txtMarca" promptText="Marca" maxWidth="Infinity"/>
                 <ComboBox fx:id="comboPromo" promptText="Promocionable" maxWidth="Infinity"/>
 
                 <TextField fx:id="txtProductoNombre" promptText="Nombre" maxWidth="Infinity" />
@@ -51,15 +57,18 @@
                 <TextField fx:id="txtPrecioVenta" promptText="Precio venta" maxWidth="Infinity" />
 
                 <HBox spacing="10" alignment="CENTER" maxWidth="Infinity">
-                    <Button text="Añadir" fx:id="btnAnadir" maxWidth="Infinity" onAction="#onAgregarButtonClick"/>
-                    <Button text="Resetear" fx:id="btnResetear" maxWidth="Infinity" onAction="#onResetButtonClick" />
-                    <Button text="Borrar" fx:id="btnBorrar" maxWidth="Infinity" onAction="#onBorrarButtonClick"/>
-                    <Button text="Actualizar" fx:id="btnActualizar" maxWidth="Infinity" onAction= "#onActualizarButtonClick" />
+                    <Button text="Añadir" fx:id="btnAnadir" maxWidth="Infinity" HBox.hgrow="ALWAYS" onAction="#onAgregarButtonClick"/>
+                    <Button text="Resetear" fx:id="btnResetear" maxWidth="Infinity" HBox.hgrow="ALWAYS" onAction="#onResetButtonClick" />
+                </HBox>
+
+                <HBox spacing="10" alignment="CENTER" maxWidth="Infinity">
+                    <Button text="Borrar" fx:id="btnBorrar" maxWidth="Infinity" HBox.hgrow="ALWAYS" onAction="#onBorrarButtonClick"/>
+                    <Button text="Actualizar" fx:id="btnActualizar" maxWidth="Infinity" HBox.hgrow="ALWAYS" onAction="#onActualizarButtonClick"/>
                 </HBox>
 
             </VBox>
 
-            <!-- Derecha: tabla productos -->
+            <!--tabla productos -->
             <VBox spacing="10" prefWidth="550" VBox.vgrow="ALWAYS">
                 <Text text="Lista de Productos" styleClass="titulo" />
                 <TableView fx:id="tablaProductos" VBox.vgrow="ALWAYS">

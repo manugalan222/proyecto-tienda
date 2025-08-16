@@ -27,8 +27,8 @@ public class ProductosControlador implements Initializable {
     @FXML TextField txtPrecioCompra = null;
     @FXML TextField txtPrecioVenta = null;
     @FXML private ComboBox<String> comboTemporada;
-    @FXML private ComboBox<String> comboMarca;
-    @FXML private ComboBox<Boolean> comboPromo;
+    @FXML private TextField txtMarca;
+    @FXML private ComboBox<String> comboPromo;
     @FXML private Spinner<Integer> spinnerStock;
 
     @FXML private TableView<Producto> tablaProductos;
@@ -40,7 +40,7 @@ public class ProductosControlador implements Initializable {
     @FXML private TableColumn<Producto, String> colMarca;
     @FXML private TableColumn<Producto, String> colTemporada;
     @FXML private TableColumn<Producto, Integer> colStock;
-    @FXML private TableColumn<Producto, Boolean> colPromo;
+    @FXML private TableColumn<Producto, String> colPromo;
 
     private ObservableList<Producto> productosObservable = FXCollections.observableArrayList(Database.listarProductos());
 
@@ -71,7 +71,7 @@ public class ProductosControlador implements Initializable {
         txtPrecioCompra.clear();
         txtPrecioVenta.clear();
         comboTemporada.getSelectionModel().clearSelection();
-        comboMarca.getSelectionModel().clearSelection();
+        txtMarca.clear();
         comboPromo.getSelectionModel().clearSelection();
         spinnerStock.getValueFactory().setValue(0);
     }
@@ -81,8 +81,8 @@ public class ProductosControlador implements Initializable {
 
         /* Recibe los valores para la base de datos*/
         String temporadaValor = comboTemporada.getValue();
-        String marcaValor = comboMarca.getValue();
-        Boolean promoValor = comboPromo.getValue();
+        String marcaValor = txtMarca.getText();
+        String promoValor = comboPromo.getValue();
         int stockValor = spinnerStock.getValue();
         double precioCompra = Double.parseDouble(txtPrecioCompra.getText());
         double precioVenta = Double.parseDouble(txtPrecioVenta.getText());
@@ -105,7 +105,7 @@ public class ProductosControlador implements Initializable {
 
         Database.actualizarProducto(txtProductoId.getText(), txtProductoNombre.getText(),Double.parseDouble(txtPrecioCompra.getText()),
                 Double.parseDouble(txtPrecioVenta.getText()),comboTemporada.getValue(), comboPromo.getValue(),
-                txtProductoDesc.getText(),comboMarca.getValue(),spinnerStock.getValue());
+                txtProductoDesc.getText(),txtMarca.getText(),spinnerStock.getValue());
 
         actualizarTabla();
     }
@@ -120,7 +120,7 @@ public class ProductosControlador implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         comboTemporada.getItems().addAll("Disponible", "No disponible", "En pedido");
 
-        comboMarca.getItems().addAll("Sin marca");
+        //comboMarca.getItems().addAll("Sin marca");
 
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1000, 0, 1);
 
@@ -128,7 +128,7 @@ public class ProductosControlador implements Initializable {
 
         spinnerStock.setEditable(true);
 
-        comboPromo.getItems().addAll(true,false);
+        comboPromo.getItems().addAll("Si","No");
 
         // Configurar cómo cada columna obtiene su valor
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -166,8 +166,9 @@ public class ProductosControlador implements Initializable {
         txtPrecioCompra.setText(String.valueOf(producto.getPrecioCompra()));
         txtPrecioVenta.setText(String.valueOf(producto.getPrecioVenta()));
         comboTemporada.setValue(producto.getTemporada());
-        comboMarca.setValue(producto.getMarca());
-        comboPromo.setValue(producto.isPromocionable());
+        //comboMarca.setValue(producto.getMarca());
+        txtMarca.setText(producto.getMarca());
+        comboPromo.setValue(producto.getPromocionable());
         spinnerStock.getValueFactory().setValue(producto.getStock());
     }
 
