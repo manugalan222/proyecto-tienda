@@ -35,7 +35,7 @@
                 <TextField fx:id="txtBuscar" promptText="Buscar por ID, nombre o marca" HBox.hgrow="ALWAYS"/>
                 <ComboBox fx:id="comboCategoria" promptText="Categoría" prefWidth="150"/>
                 <ComboBox fx:id="comboMarca" promptText="Marca" prefWidth="150"/>
-                <CheckBox fx:id="chkStockBajo" text="Solo stock bajo"/>
+                <CheckBox fx:id="chkStockBajo" text="Solo stock bajo" onAction="#onChkStockBajo"/>
                 <Button text="Limpiar"/>
             </HBox>
 

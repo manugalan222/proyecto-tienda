@@ -55,18 +55,17 @@
                     <columns>
                         <TableColumn fx:id="colClienteId" text="ID" prefWidth="60"/>
                         <TableColumn fx:id="colClienteNombre" text="Nombre" prefWidth="200"/>
+                        <TableColumn fx:id="colClienteApellido" text="Apellido" prefWidth="100"/>
                         <TableColumn fx:id="colClienteDni" text="DNI/CUIT" prefWidth="120"/>
                         <TableColumn fx:id="colClienteTelefono" text="Teléfono" prefWidth="120"/>
-                        <TableColumn fx:id="colClienteEmail" text="Email" prefWidth="200"/>
-                        <TableColumn fx:id="colClienteTipo" text="Tipo" prefWidth="100"/>
                     </columns>
                 </TableView>
 
                 <!-- Botones de cliente -->
                 <HBox spacing="10" alignment="CENTER_RIGHT">
-                    <Button text="Nuevo Cliente" />
-                    <Button text="Editar" />
-                    <Button text="Eliminar" />
+                    <Button text="Nuevo Cliente" onAction="#onNuevoClienteButtonClick"/>
+                    <Button text="Editar" onAction="#onEditarClienteButtonClick" />
+                    <Button text="Eliminar" onAction="#onEliminarClienteButtonClick" />
                 </HBox>
 
                 <!-- Tabla de pedidos del cliente seleccionado -->

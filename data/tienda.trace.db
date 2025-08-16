@@ -2522,3 +2522,7 @@ UPDATE productos SET nombre=?, precio_compra=?, precio_venta=?, temporada_produc
 org.h2.jdbc.JdbcSQLDataException: Conversión de datos fallida, convirtiendo 
 Data conversion error converting ; SQL statement:
 DELETE FROM productos WHERE id=? [22018-232]
+2025-08-16 15:11:35.467786-03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Conversión de datos fallida, convirtiendo "'Si' (PRODUCTOS: ""PROMOCIONABLE"" BOOLEAN NOT NULL)"
+Data conversion error converting "'Si' (PRODUCTOS: ""PROMOCIONABLE"" BOOLEAN NOT NULL)"; SQL statement:
+INSERT INTO productos (id, nombre, precio_compra, precio_venta, temporada_producto, promocionable, descripcion, marca, stock) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) [22018-232]

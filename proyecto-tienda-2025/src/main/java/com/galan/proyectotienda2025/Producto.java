@@ -6,13 +6,13 @@ public class Producto {
     public double precioCompra;
     public double precioVenta;
     public String temporada;
-    public boolean promocionable;
+    public String promocionable;
     public String descripcion;
     public String marca;
     public int stock;
 
     public Producto(String id, String nombre, double precioCompra, double precioVenta, String temporada,
-                    boolean promocionable, String descripcion, String marca, int stock) {
+                    String promocionable, String descripcion, String marca, int stock) {
         this.id = id;
         this.nombre = nombre;
         this.precioCompra = precioCompra;
@@ -32,7 +32,7 @@ public class Producto {
     public String getMarca() { return marca; }
     public String getTemporada() { return temporada; }
     public int getStock() { return stock; }
-    public boolean isPromocionable() { return promocionable; }
+    public String getPromocionable() { return promocionable; }
 
 
     @Override
