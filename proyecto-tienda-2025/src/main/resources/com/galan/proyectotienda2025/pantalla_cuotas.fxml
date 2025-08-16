@@ -27,7 +27,7 @@
                 <Button text="Ventas" styleClass="menu-btn" maxWidth="Infinity" onAction="#onVentasButtonClick"/>
                 <Button text="Clientes" styleClass="menu-btn" maxWidth="Infinity" onAction="#onClientesButtonClick"/>
                 <Button text="Inventario" styleClass="menu-btn" maxWidth="Infinity" onAction="#onInventarioButtonClick"/>
-                <Button text="Cuotas" styleClass="menu-btn" maxWidth="Infinity"/>
+                <Button text="Cuotas" styleClass="menu-btn" maxWidth="Infinity" />
                 <Button text="Configuración" styleClass="menu-btn" maxWidth="Infinity"/>
             </children>
         </VBox>
@@ -45,8 +45,8 @@
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <Label text="Buscar:"/>
                     <TextField fx:id="txtBuscarCuota" promptText="ID de Venta o DNI de Cliente" prefWidth="250"/>
-                    <Button text="Buscar" />
-                    <Button text="Limpiar"/>
+                    <Button text="Buscar" onAction="#onBuscarCuotaClick"/>
+                    <Button text="Limpiar" onAction="#onLimpiarBusquedaClick"/>
                 </HBox>
 
                 <!-- Tabla de cuotas pendientes -->
@@ -66,7 +66,7 @@
 
                 <!-- Botones de acción -->
                 <HBox spacing="10" alignment="CENTER_RIGHT">
-                    <Button text="Registrar Pago" fx:id="btnRegistrarPago"/>
+                    <Button text="Registrar Pago" fx:id="btnRegistrarPago" onAction="#onRegistrarPagoClick"/>
                     <Button text="Recordar Pago" fx:id="btnRecordarPago"/>
                 </HBox>
 

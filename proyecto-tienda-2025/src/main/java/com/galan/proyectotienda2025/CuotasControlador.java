@@ -20,6 +20,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import org.h2.store.Data;
+
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
@@ -82,13 +84,18 @@ public class CuotasControlador {
 
     @FXML
     public void onRegistrarPagoClick() {
+        Database.RegistrarPagoCuota(1);
     }
 
     @FXML
     public void onBuscarCuotaClick() {
-        // Lógica de búsqueda, pendiente de implementación
-        // Por ahora, recarga todos los datos
-        cargarCuotasPendientes();
+        cuotasData.clear();
+        String dni = txtBuscarCuota.getText().trim();
+        if (!dni.isEmpty()) {
+            cuotasData.addAll(Database.buscarResumenVentasPorDni(dni));
+        } else {
+            cargarCuotasPendientes();
+        }
     }
 
     @FXML
