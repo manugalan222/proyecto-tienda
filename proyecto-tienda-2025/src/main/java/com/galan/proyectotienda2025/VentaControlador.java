@@ -151,6 +151,10 @@ public class VentaControlador {
 
         Cliente cliente = Database.obtenerClientePorDni(dni);
 
+
+
+
+
         if (cliente == null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Cliente No Encontrado");

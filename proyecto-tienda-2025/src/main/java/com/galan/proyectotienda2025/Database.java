@@ -34,7 +34,7 @@ public class Database {
                     precio_compra DECIMAL(10,2) NOT NULL,
                     precio_venta DECIMAL(10,2) NOT NULL,
                     temporada_producto VARCHAR(30) NOT NULL,
-                    promocionable BOOLEAN NOT NULL,
+                    promocionable VARCHAR(30) NOT NULL,
                     descripcion TEXT,
                     marca VARCHAR(50) NOT NULL,
                     stock INT NOT NULL
@@ -100,7 +100,7 @@ public class Database {
     }
 
     public static void insertarProducto(String id, String nombre, double precioCompra, double precioVenta, String temporada,
-                                        boolean promocionable, String descripcion, String marca, int stock) {
+                                        String promocionable, String descripcion, String marca, int stock) {
         String sql = "INSERT INTO productos (id, nombre, precio_compra, precio_venta, temporada_producto, promocionable, descripcion, marca, stock) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = connect();
@@ -111,7 +111,7 @@ public class Database {
             pstmt.setDouble(3, precioCompra);
             pstmt.setDouble(4, precioVenta);
             pstmt.setString(5, temporada);
-            pstmt.setBoolean(6, promocionable);
+            pstmt.setString(6, promocionable);
             pstmt.setString(7, descripcion);
             pstmt.setString(8, marca);
             pstmt.setInt(9, stock);
@@ -238,7 +238,7 @@ public class Database {
                         rs.getDouble("precio_compra"),
                         rs.getDouble("precio_venta"),
                         rs.getString("temporada_producto"),
-                        rs.getBoolean("promocionable"),
+                        rs.getString("promocionable"),
                         rs.getString("descripcion"),
                         rs.getString("marca"),
                         rs.getInt("stock")
@@ -253,10 +253,35 @@ public class Database {
         return productos;
     }
 
+    public static List<Cliente> listarCliente() {
+        String sql = "SELECT * FROM cliente";
+        List<Cliente> cliente = new ArrayList<>();
+
+        try (Connection conn = connect();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Cliente c = new Cliente(
+                        rs.getLong("id"),
+                        rs.getString("nombre"),
+                        rs.getString("apellido"),
+                        rs.getString("telefono"),
+                        rs.getString("dni")
+                );
+                cliente.add(c);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return cliente;
+    }
     
     
     public static void actualizarProducto(String id, String nombre, double precioCompra, double precioVenta, String temporada,
-                                          boolean promocionable, String descripcion, String marca, int stock) {
+                                          String promocionable, String descripcion, String marca, int stock) {
         String sql = "UPDATE productos SET nombre=?, precio_compra=?, precio_venta=?, temporada_producto=?, promocionable=?, descripcion=?, marca=?, stock=? WHERE id = ?";
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -265,7 +290,7 @@ public class Database {
             pstmt.setDouble(2, precioCompra);
             pstmt.setDouble(3, precioVenta);
             pstmt.setString(4, temporada);
-            pstmt.setBoolean(5, promocionable);
+            pstmt.setString(5, promocionable);
             pstmt.setString(6, descripcion);
             pstmt.setString(7, marca);
             pstmt.setInt(8, stock);
@@ -320,7 +345,7 @@ public class Database {
                             rs.getDouble("precio_compra"),
                             rs.getDouble("precio_venta"),
                             rs.getString("temporada_producto"),
-                            rs.getBoolean("promocionable"),
+                            rs.getString("promocionable"),
                             rs.getString("descripcion"),
                             rs.getString("marca"),
                             rs.getInt("stock")
@@ -331,6 +356,36 @@ public class Database {
             e.printStackTrace();
         }
         return producto;
+    }
+
+    public static List<Producto> obtenerProductoBajoStock() {
+        List<Producto> productos = new ArrayList<>();
+
+        String sql = "SELECT * FROM productos WHERE stock < 5";
+
+        try (Connection conn = connect();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Producto p = new Producto(
+                        rs.getString("id"),
+                        rs.getString("nombre"),
+                        rs.getDouble("precio_compra"),
+                        rs.getDouble("precio_venta"),
+                        rs.getString("temporada_producto"),
+                        rs.getString("promocionable"),
+                        rs.getString("descripcion"),
+                        rs.getString("marca"),
+                        rs.getInt("stock")
+                );
+                productos.add(p);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return productos;
     }
 
 
@@ -384,6 +439,53 @@ public class Database {
         } catch (SQLException e) {
             // Esta es la parte crucial: aquí se mostrará la razón del error.
             System.err.println("Error al insertar cliente en la base de datos: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /* el método para modificar los clientes */
+
+    public static void actualizarCliente(Long id, String nombre, String apellido, String dni, String telefono) {
+        String sql = "UPDATE cliente SET nombre=?, apellido=?, dni=?, telefono=? WHERE id=?" ;
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, nombre);
+            pstmt.setString(2, apellido);
+            pstmt.setString(3, dni);
+            pstmt.setString(4, telefono);
+            pstmt.setLong(5, id);
+
+            int filas = pstmt.executeUpdate();
+
+            if (filas > 0) {
+                System.out.println("Producto actualizado.");
+            } else {
+                System.out.println("No se encontró producto con id " + id);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /*aca creo el metodo para borrar un cliente */
+
+    public static void eliminarCliente(Long id) {
+        String sql = "DELETE FROM cliente WHERE id=?";
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setLong(1, id);
+            int filas = pstmt.executeUpdate();
+            if (filas > 0) {
+                System.out.println("Producto eliminado.");
+            } else {
+                System.out.println("No se encontró producto con id " + id);
+            }
+
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -504,6 +606,21 @@ public class Database {
         }
         return resumenEncontrados;
     }
+
+    public static void modificarColumnaPromo() {
+        String sql = "ALTER TABLE productos ALTER COLUMN promocionable VARCHAR(30)"; // Cambiá según lo que necesites
+
+        try (Connection conn = connect();
+             Statement stmt = conn.createStatement()) {
+
+            stmt.execute(sql);
+            System.out.println("Columna modificada correctamente.");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }
 

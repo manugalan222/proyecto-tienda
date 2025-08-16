@@ -18,4 +18,8 @@ public class Cliente {
     public long getId() {
         return id;
     }
+    public String getNombre(){ return nombre; }
+    public String getApellido(){ return apellido;}
+    public String getTelefono(){return telefono;}
+    public String getDni(){ return dni;}
 }

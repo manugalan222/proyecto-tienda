@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -29,7 +30,9 @@ public class InventarioControlador implements Initializable {
     @FXML private TableColumn<Producto, String> colMarca;
     @FXML private TableColumn<Producto, String> colTemporada;
     @FXML private TableColumn<Producto, Integer> colStock;
-    @FXML private TableColumn<Producto, Boolean> colPromo;
+    @FXML private TableColumn<Producto, String> colPromo;
+
+    private ObservableList<Producto> productosObservable = FXCollections.observableArrayList(Database.listarProductos());
 
     public void onInicioButtonClick(ActionEvent actionEvent) throws IOException {
         cambiarEscena(actionEvent,"pantalla_principal.fxml");
@@ -62,9 +65,6 @@ public class InventarioControlador implements Initializable {
         colStock.setCellValueFactory(new PropertyValueFactory<>("stock"));
         colDesc.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
 
-        // Traer los datos de la BD y mostrarlos
-        ObservableList<Producto> productosObservable = FXCollections.observableArrayList(Database.listarProductos());
-
         tablaProductos.setItems(productosObservable);
 
     }
@@ -77,4 +77,18 @@ public class InventarioControlador implements Initializable {
     }
 
 
+    public void onChkStockBajo(ActionEvent actionEvent) {
+        CheckBox checkBox = (CheckBox) actionEvent.getSource();
+        if (checkBox.isSelected()) {
+            tablaProductos.setItems(FXCollections.observableArrayList(Database.obtenerProductoBajoStock()));
+        } else {
+            tablaProductos.setItems(FXCollections.observableArrayList(Database.listarProductos()));
+        }
+    }
+
+
+    public void actualizarTabla(){
+        productosObservable.clear();
+        productosObservable.addAll(Database.listarProductos());
+    }
 }
