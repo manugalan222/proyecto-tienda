@@ -28,6 +28,7 @@ import java.util.List;
 
 public class CuotasControlador {
 
+    @FXML private TextField txtCuotasAPagar;
     @FXML private TextField txtBuscarCuota;
     @FXML private TableView<ResumenVenta> tablaCuotasPendientes;
     //@FXML private TableColumn<ResumenVenta, Long> colCuotaId;
@@ -84,7 +85,42 @@ public class CuotasControlador {
 
     @FXML
     public void onRegistrarPagoClick() {
-        Database.RegistrarPagoCuota(1);
+        ResumenVenta ventaSeleccionada = tablaCuotasPendientes.getSelectionModel().getSelectedItem();
+
+        // Verificación de selección de venta.
+        if (ventaSeleccionada == null) {
+            mostrarAlerta("Error"+"Por favor, seleccione una venta de la tabla.");
+            return;
+        }
+
+        // Verificación de la cantidad de cuotas.
+        String cuotasStr = txtCuotasAPagar.getText();
+        if (cuotasStr == null || cuotasStr.trim().isEmpty()) {
+            mostrarAlerta("Error" + "Por favor, ingrese la cantidad de cuotas a pagar.");
+            return;
+        }
+
+        int numeroCuotas;
+        try {
+            numeroCuotas = Integer.parseInt(cuotasStr);
+            if (numeroCuotas <= 0) {
+                mostrarAlerta("Error"+ "La cantidad de cuotas debe ser un número positivo.");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            mostrarAlerta("Error" + "Por favor, ingrese un número válido para las cuotas.");
+            return;
+        }
+
+        // Llamamos a la nueva función de la base de datos para registrar el pago.
+        Database.registrarPagoCuotas(ventaSeleccionada.getVentaId(), numeroCuotas);
+
+        // Recargamos la tabla para que se muestren los cambios.
+        cargarCuotasPendientes();
+
+        // Limpiamos el campo de texto.
+        txtCuotasAPagar.clear();
+        mostrarAlerta("Éxito" + "Pago de cuotas registrado con éxito.");
     }
 
     @FXML

@@ -67,6 +67,7 @@
                 <!-- Botones de acción -->
                 <HBox spacing="10" alignment="CENTER_RIGHT">
                     <Button text="Registrar Pago" fx:id="btnRegistrarPago" onAction="#onRegistrarPagoClick"/>
+                    <TextField fx:id="txtCuotasAPagar" prefWidth="80" promptText="1"/>
                     <Button text="Recordar Pago" fx:id="btnRecordarPago"/>
                 </HBox>
 
