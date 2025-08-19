@@ -506,6 +506,7 @@ public class Database {
             FROM cuotas AS c
             JOIN venta AS v ON c.venta_id = v.id
             JOIN cliente AS cl ON v.cliente_id = cl.id
+            WHERE v.saldo_pendiente > 0
             GROUP BY c.venta_id, cl.dni, v.monto_total, v.saldo_pendiente, c.tipo_cuota, v.fecha_compra
             ORDER BY c.venta_id ASC;
             """;
@@ -533,33 +534,113 @@ public class Database {
         return resumenVentas;
     }
 
-    public static void RegistrarPagoCuota(long id){
+    public static void registrarPagoCuotas(long ventaId, int numeroCuotas) {
+        Connection conn = null;
+        try {
+            conn = connect();
+            // Desactiva el auto-commit para poder gestionar la transacción manualmente.
+            conn.setAutoCommit(false);
 
+            // 1. Obtener el monto de una cuota de la venta.
+            String sqlMontoCuota = "SELECT monto_cuota FROM cuotas WHERE venta_id = ? LIMIT 1";
+            PreparedStatement pstmtMonto = conn.prepareStatement(sqlMontoCuota);
+            pstmtMonto.setLong(1, ventaId);
+            ResultSet rs = pstmtMonto.executeQuery();
+            if (!rs.next()) {
+                System.err.println("Error: No se encontró la cuota para la venta con ID " + ventaId);
+                conn.rollback(); // Deshace la transacción en caso de error.
+                return;
+            }
+            double montoCuota = rs.getDouble("monto_cuota");
+            rs.close();
+            pstmtMonto.close();
+
+            // 2. Marcar las cuotas más antiguas como 'Pagadas'.
+            String sqlUpdateCuotas = """
+                UPDATE cuotas
+                SET estado = 'Pagada', fecha_pago = CURRENT_TIMESTAMP()
+                WHERE id IN (
+                    SELECT id FROM cuotas
+                    WHERE venta_id = ? AND estado = 'Pendiente'
+                    ORDER BY fecha_vencimiento ASC
+                    LIMIT ?
+                );
+            """;
+            PreparedStatement pstmtUpdateCuotas = conn.prepareStatement(sqlUpdateCuotas);
+            pstmtUpdateCuotas.setLong(1, ventaId);
+            pstmtUpdateCuotas.setInt(2, numeroCuotas);
+            int filasAfectadas = pstmtUpdateCuotas.executeUpdate();
+            pstmtUpdateCuotas.close();
+
+            // 3. Actualizar el saldo pendiente de la venta.
+            double montoAPagar = montoCuota * filasAfectadas;
+            String sqlUpdateVenta = """
+                UPDATE venta
+                SET saldo_pendiente = saldo_pendiente - ?
+                WHERE id = ?;
+            """;
+            PreparedStatement pstmtUpdateVenta = conn.prepareStatement(sqlUpdateVenta);
+            pstmtUpdateVenta.setDouble(1, montoAPagar);
+            pstmtUpdateVenta.setLong(2, ventaId);
+            pstmtUpdateVenta.executeUpdate();
+            pstmtUpdateVenta.close();
+
+            // Si todo fue exitoso, confirma la transacción.
+            conn.commit();
+            System.out.println(filasAfectadas + " cuotas registradas como pagadas para la venta " + ventaId + ".");
+            System.out.println("Saldo pendiente de la venta actualizado.");
+
+        } catch (SQLException e) {
+            System.err.println("Error en la transacción al registrar el pago: " + e.getMessage());
+            e.printStackTrace();
+            if (conn != null) {
+                try {
+                    System.err.println("La transacción se ha deshecho.");
+                    conn.rollback(); // En caso de error, deshace todos los cambios.
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static List<LineaDeVenta> obtenerProductosPorVenta(long ventaId) {
+        List<LineaDeVenta> productos = new ArrayList<>();
         String sql = """
-            UPDATE cuotas
-            SET estado = 'Pagada', fecha_pago = CURRENT_TIMESTAMP()
-            WHERE id = ?;
+            SELECT p.nombre, lv.cantidad, lv.subtotal
+            FROM linea_de_venta lv
+            JOIN productos p ON lv.producto_id = p.id
+            WHERE lv.venta_id = ?;
         """;
 
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setLong(1, id);
 
-            // Ejecutamos la consulta. executeUpdate() devuelve el número de filas afectadas.
-            int filasAfectadas = pstmt.executeUpdate();
+            pstmt.setLong(1, ventaId);
+            ResultSet rs = pstmt.executeQuery();
 
-            if (filasAfectadas > 0) {
-                System.out.println("Pago de cuota con ID " + id + " registrado con éxito.");
-            } else {
-                System.out.println("No se encontró ninguna cuota con el ID " + id + ".");
+            while (rs.next()) {
+                String nombreProducto = rs.getString("nombre");
+                int cantidad = rs.getInt("cantidad");
+                double subtotal = rs.getDouble("subtotal");
+                productos.add(new LineaDeVenta(nombreProducto, cantidad, subtotal));
             }
 
         } catch (SQLException e) {
-            System.err.println("Error al registrar el pago de la cuota: " + e.getMessage());
+            System.err.println("Error al obtener los productos de la venta: " + e.getMessage());
             e.printStackTrace();
         }
+        return productos;
     }
-
 
     public static List<ResumenVenta> buscarResumenVentasPorDni(String dni) {
         List<ResumenVenta> resumenEncontrados = new ArrayList<>();

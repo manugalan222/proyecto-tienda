@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<VBox alignment="CENTER" prefHeight="400.0" prefWidth="600.0" spacing="15.0" style="-fx-padding: 20;"
+      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.galan.proyectotienda2025.DetalleVentaProductosControlador">
+
+    <children>
+        <Text text="Productos de la Venta" styleClass="titulo">
+            <font>
+                <Font size="20.0" />
+            </font>
+        </Text>
+
+        <Label fx:id="lblVentaId" text="ID de Venta: [ID]" />
+
+        <TableView fx:id="tablaProductos" prefHeight="300.0" prefWidth="560.0">
+            <columns>
+                <TableColumn fx:id="colNombreProducto" prefWidth="300.0" text="Producto" />
+                <TableColumn fx:id="colCantidad" prefWidth="100.0" text="Cantidad" />
+                <TableColumn fx:id="colSubtotal" prefWidth="150.0" text="Subtotal" />
+            </columns>
+        </TableView>
+    </children>
+</VBox>

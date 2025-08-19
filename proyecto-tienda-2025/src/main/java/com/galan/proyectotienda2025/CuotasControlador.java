@@ -19,6 +19,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import org.h2.store.Data;
 
@@ -28,6 +30,7 @@ import java.util.List;
 
 public class CuotasControlador {
 
+    @FXML private TextField txtCuotasAPagar;
     @FXML private TextField txtBuscarCuota;
     @FXML private TableView<ResumenVenta> tablaCuotasPendientes;
     //@FXML private TableColumn<ResumenVenta, Long> colCuotaId;
@@ -84,7 +87,42 @@ public class CuotasControlador {
 
     @FXML
     public void onRegistrarPagoClick() {
-        Database.RegistrarPagoCuota(1);
+        ResumenVenta ventaSeleccionada = tablaCuotasPendientes.getSelectionModel().getSelectedItem();
+
+        // Verificación de selección de venta.
+        if (ventaSeleccionada == null) {
+            mostrarAlerta("Error"+"Por favor, seleccione una venta de la tabla.");
+            return;
+        }
+
+        // Verificación de la cantidad de cuotas.
+        String cuotasStr = txtCuotasAPagar.getText();
+        if (cuotasStr == null || cuotasStr.trim().isEmpty()) {
+            mostrarAlerta("Error" + "Por favor, ingrese la cantidad de cuotas a pagar.");
+            return;
+        }
+
+        int numeroCuotas;
+        try {
+            numeroCuotas = Integer.parseInt(cuotasStr);
+            if (numeroCuotas <= 0) {
+                mostrarAlerta("Error"+ "La cantidad de cuotas debe ser un número positivo.");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            mostrarAlerta("Error" + "Por favor, ingrese un número válido para las cuotas.");
+            return;
+        }
+
+        // Llamamos a la nueva función de la base de datos para registrar el pago.
+        Database.registrarPagoCuotas(ventaSeleccionada.getVentaId(), numeroCuotas);
+
+        // Recargamos la tabla para que se muestren los cambios.
+        cargarCuotasPendientes();
+
+        // Limpiamos el campo de texto.
+        txtCuotasAPagar.clear();
+        mostrarAlerta("Éxito" + "Pago de cuotas registrado con éxito.");
     }
 
     @FXML
@@ -99,6 +137,30 @@ public class CuotasControlador {
     }
 
     @FXML
+    public void onTablaDoubleClick(MouseEvent event) {
+        if (event.getClickCount() == 2 && event.getButton() == MouseButton.PRIMARY) {
+            ResumenVenta ventaSeleccionada = tablaCuotasPendientes.getSelectionModel().getSelectedItem();
+            if (ventaSeleccionada != null) {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("pantalla_productos_comprados.fxml"));
+                    Parent root = loader.load();
+
+                    DetalleVentaProductosControlador controller = loader.getController();
+                    controller.setVentaId(ventaSeleccionada.getVentaId());
+
+                    Stage stage = new Stage();
+                    stage.setTitle("Productos de la Venta " + ventaSeleccionada.getVentaId());
+                    stage.setScene(new Scene(root));
+                    stage.show();
+                } catch (IOException e) {
+                    mostrarAlerta("Error" + "No se pudo cargar la vista de detalles de productos.");
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @FXML
     public void onLimpiarBusquedaClick() {
         txtBuscarCuota.clear();
         cargarCuotasPendientes();
@@ -109,6 +171,7 @@ public class CuotasControlador {
         alert.setContentText(mensaje);
         alert.showAndWait();
     }
+
 
     public void onProductosButtonClick(ActionEvent actionEvent) throws IOException { cambiarEscena(actionEvent, "pantalla_productos.fxml"); }
     public void onInicioButtonClick(ActionEvent actionEvent) throws IOException { cambiarEscena(actionEvent, "pantalla_principal.fxml"); }
