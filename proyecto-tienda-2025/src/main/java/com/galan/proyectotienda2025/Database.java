@@ -506,6 +506,7 @@ public class Database {
             FROM cuotas AS c
             JOIN venta AS v ON c.venta_id = v.id
             JOIN cliente AS cl ON v.cliente_id = cl.id
+            WHERE v.saldo_pendiente > 0
             GROUP BY c.venta_id, cl.dni, v.monto_total, v.saldo_pendiente, c.tipo_cuota, v.fecha_compra
             ORDER BY c.venta_id ASC;
             """;
@@ -612,6 +613,34 @@ public class Database {
         }
     }
 
+    public static List<LineaDeVenta> obtenerProductosPorVenta(long ventaId) {
+        List<LineaDeVenta> productos = new ArrayList<>();
+        String sql = """
+            SELECT p.nombre, lv.cantidad, lv.subtotal
+            FROM linea_de_venta lv
+            JOIN productos p ON lv.producto_id = p.id
+            WHERE lv.venta_id = ?;
+        """;
+
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setLong(1, ventaId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                String nombreProducto = rs.getString("nombre");
+                int cantidad = rs.getInt("cantidad");
+                double subtotal = rs.getDouble("subtotal");
+                productos.add(new LineaDeVenta(nombreProducto, cantidad, subtotal));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al obtener los productos de la venta: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return productos;
+    }
 
     public static List<ResumenVenta> buscarResumenVentasPorDni(String dni) {
         List<ResumenVenta> resumenEncontrados = new ArrayList<>();

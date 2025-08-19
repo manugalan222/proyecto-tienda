@@ -50,7 +50,9 @@
                 </HBox>
 
                 <!-- Tabla de cuotas pendientes -->
-                <TableView fx:id="tablaCuotasPendientes" prefHeight="400" prefWidth="Infinity">
+                <TableView fx:id="tablaCuotasPendientes" onMouseClicked="#onTablaDoubleClick"
+                           prefHeight="400" prefWidth="Infinity">
+
                     <columns>
                         <TableColumn fx:id="colVentaId" text="ID Venta" prefWidth="80"/>
                         <TableColumn fx:id="colClienteDni" text="DNI Cliente" prefWidth="120"/>

@@ -19,6 +19,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import org.h2.store.Data;
 
@@ -135,6 +137,30 @@ public class CuotasControlador {
     }
 
     @FXML
+    public void onTablaDoubleClick(MouseEvent event) {
+        if (event.getClickCount() == 2 && event.getButton() == MouseButton.PRIMARY) {
+            ResumenVenta ventaSeleccionada = tablaCuotasPendientes.getSelectionModel().getSelectedItem();
+            if (ventaSeleccionada != null) {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("pantalla_productos_comprados.fxml"));
+                    Parent root = loader.load();
+
+                    DetalleVentaProductosControlador controller = loader.getController();
+                    controller.setVentaId(ventaSeleccionada.getVentaId());
+
+                    Stage stage = new Stage();
+                    stage.setTitle("Productos de la Venta " + ventaSeleccionada.getVentaId());
+                    stage.setScene(new Scene(root));
+                    stage.show();
+                } catch (IOException e) {
+                    mostrarAlerta("Error" + "No se pudo cargar la vista de detalles de productos.");
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @FXML
     public void onLimpiarBusquedaClick() {
         txtBuscarCuota.clear();
         cargarCuotasPendientes();
@@ -145,6 +171,7 @@ public class CuotasControlador {
         alert.setContentText(mensaje);
         alert.showAndWait();
     }
+
 
     public void onProductosButtonClick(ActionEvent actionEvent) throws IOException { cambiarEscena(actionEvent, "pantalla_productos.fxml"); }
     public void onInicioButtonClick(ActionEvent actionEvent) throws IOException { cambiarEscena(actionEvent, "pantalla_principal.fxml"); }
