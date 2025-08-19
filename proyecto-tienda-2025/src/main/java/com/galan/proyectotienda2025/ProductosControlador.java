@@ -56,7 +56,7 @@ public class ProductosControlador implements Initializable {
         cambiarEscena(actionEvent, "pantalla_clientes.fxml");
     }
 
-    public void onVentasButtonClick(ActionEvent actionEvent) throws IOException {
+    public void onVentaButtonClick(ActionEvent actionEvent) throws IOException {
         cambiarEscena(actionEvent, "pantalla_venta.fxml");
     }
 
@@ -172,5 +172,8 @@ public class ProductosControlador implements Initializable {
         spinnerStock.getValueFactory().setValue(producto.getStock());
     }
 
+
+    public void onProductosButtonClick(ActionEvent actionEvent) {
+    }
 
 }

@@ -12,16 +12,20 @@
 
     <!-- Barra lateral -->
     <left>
-        <VBox id="barra-lateral" spacing="10.0" prefWidth="300.0" styleClass="sidebar">
-            <children>
-                <Button text="Inicio" styleClass="menu-btn" maxWidth="Infinity" onAction="#onInicioButtonClick"/>
-                <Button text="Productos" styleClass="menu-btn" maxWidth="Infinity"/>
-                <Button text="Ventas" styleClass="menu-btn" maxWidth="Infinity" onAction="#onVentasButtonClick"/>
-                <Button text="Clientes" styleClass="menu-btn" maxWidth="Infinity" onAction="#onClienteButtonClick"/>
-                <Button text="Inventario" styleClass="menu-btn" maxWidth="Infinity" onAction="#onInventarioButtonClick"/>
-                <Button text="Cuotas" styleClass="menu-btn" maxWidth="Infinity" onAction="#onCuotasButtonClick"/>
-                <Button text="Configuración" styleClass="menu-btn" maxWidth="Infinity"/>
-            </children>
+        <VBox id="barra-lateral" spacing="10.0" prefWidth="300.0" styleClass="sidebar" >
+            <HBox alignment="CENTER" styleClass="sidebar-brand">
+                <Text text="MB" styleClass="brand-short"/>
+                <Text text="Distribuciones" styleClass="brand-long"/>
+            </HBox>
+
+            <Button text="🏠 Inicio" styleClass="menu-btn" maxWidth="Infinity" onAction="#onInicioButtonClick"/>
+            <Button text="📦 Productos" styleClass="menu-btn" maxWidth="Infinity" onAction="#onProductosButtonClick"/>
+            <Button text="💰 Ventas" styleClass="menu-btn" maxWidth="Infinity" onAction="#onVentaButtonClick"/>
+            <Button text="👥 Clientes" styleClass="menu-btn" maxWidth="Infinity" onAction="#onClienteButtonClick"/>
+            <Button text="📊 Inventario" styleClass="menu-btn" maxWidth="Infinity" onAction="#onInventarioButtonClick"/>
+            <Button text="💳 Cuotas" styleClass="menu-btn" maxWidth="Infinity" onAction="#onCuotasButtonClick"/>
+            <Button text="⚙️ Configuración" styleClass="menu-btn" maxWidth="Infinity"/>
+
         </VBox>
     </left>
 

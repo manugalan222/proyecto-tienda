@@ -41,10 +41,10 @@ public class InventarioControlador implements Initializable {
     public void onProductosButtonClick(ActionEvent actionEvent) throws IOException {
         cambiarEscena(actionEvent,"pantalla_productos.fxml");
     }
-    public void onVentasButtonClick(ActionEvent actionEvent) throws IOException {
+    public void onVentaButtonClick(ActionEvent actionEvent) throws IOException {
         cambiarEscena(actionEvent,"pantalla_venta.fxml");
     }
-    public void onClientesButtonClick(ActionEvent actionEvent) throws IOException {
+    public void onClienteButtonClick(ActionEvent actionEvent) throws IOException {
         cambiarEscena(actionEvent,"pantalla_clientes.fxml");
     }
 
@@ -90,5 +90,9 @@ public class InventarioControlador implements Initializable {
     public void actualizarTabla(){
         productosObservable.clear();
         productosObservable.addAll(Database.listarProductos());
+    }
+
+    public void onInventarioButtonClick(ActionEvent actionEvent) {
+
     }
 }

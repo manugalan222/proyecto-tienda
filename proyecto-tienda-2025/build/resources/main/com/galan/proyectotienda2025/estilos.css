@@ -25,10 +25,16 @@
 
 /* Botones del menú */
 .menu-btn {
+    /*cosas del emoji*/
+    -fx-content-display: LEFT;
+    -fx-alignment: CENTER_LEFT;
+    -fx-font-size: 14px;
+    -fx-spacing: 8; /* espacio entre emoji y texto */
+
     -fx-background-color: #34495e;
     -fx-text-fill: white;
     -fx-font-size: 14px;
-    -fx-pref-width: 160;
+    -fx-pref-width: 200;
     -fx-padding: 10 20 10 20;
     -fx-background-radius: 10;
     -fx-alignment: CENTER_LEFT;
@@ -239,3 +245,57 @@
     -fx-font-weight: bold;
     -fx-padding: 10 0 0 0;
 }
+
+
+/*cositas */
+.sidebar-brand {
+    -fx-padding: 20;
+    -fx-background-color: #1f3b57;
+    -fx-background-radius: 15; /* esquinas redondeadas */
+    -fx-border-radius: 15;     /* para que el borde siga la curva */
+    -fx-border-color: #3498db; /* opcional, si querés borde */
+    -fx-border-width: 2;       /* grosor del borde */
+}
+
+
+.brand-short {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-fill: #3498db; /* verde para resaltar MB */
+}
+
+.brand-long {
+    -fx-font-size: 16px;
+    -fx-font-weight: normal;
+    -fx-fill: white;
+    -fx-padding: 0 0 0 5; /* un poco de aire a la izquierda */
+}
+
+/* el barchart * /
+/* Color de la primera serie de barras */
+.default-color0.chart-bar {
+    -fx-bar-fill: #1f3b57; /* verde moderno */
+}
+
+/* Si tuvieras una segunda serie */
+.default-color1.chart-bar {
+    -fx-bar-fill: #2196F3; /* azul */
+}
+
+/* Fondo del gráfico */
+.chart-plot-background {
+    -fx-background-color: #f8f8f8; /* gris clarito */
+}
+
+/* Ejes */
+.axis-label, .tick-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+/* Sin bordes feos en las barras */
+.chart-bar {
+    -fx-background-radius: 5;
+}
+
