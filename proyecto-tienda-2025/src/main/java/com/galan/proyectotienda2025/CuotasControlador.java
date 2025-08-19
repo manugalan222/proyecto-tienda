@@ -113,8 +113,8 @@ public class CuotasControlador {
     public void onProductosButtonClick(ActionEvent actionEvent) throws IOException { cambiarEscena(actionEvent, "pantalla_productos.fxml"); }
     public void onInicioButtonClick(ActionEvent actionEvent) throws IOException { cambiarEscena(actionEvent, "pantalla_principal.fxml"); }
     public void onInventarioButtonClick(ActionEvent actionEvent) throws IOException { cambiarEscena(actionEvent, "pantalla_inventario.fxml"); }
-    public void onClientesButtonClick(ActionEvent actionEvent) throws IOException { cambiarEscena(actionEvent, "pantalla_clientes.fxml"); }
-    public void onVentasButtonClick(ActionEvent actionEvent) throws IOException{ cambiarEscena(actionEvent, "pantalla_venta.fmxl");}
+    public void onClienteButtonClick(ActionEvent actionEvent) throws IOException { cambiarEscena(actionEvent, "pantalla_clientes.fxml"); }
+    public void onVentaButtonClick(ActionEvent actionEvent) throws IOException{ cambiarEscena(actionEvent, "pantalla_venta.fmxl");}
 
 
     private void cambiarEscena(ActionEvent actionEvent, String fxml) throws IOException {
@@ -124,4 +124,8 @@ public class CuotasControlador {
         stage.show();
     }
 
+
+    public void onCuotasButtonClick(ActionEvent actionEvent) {
+
+    }
 }

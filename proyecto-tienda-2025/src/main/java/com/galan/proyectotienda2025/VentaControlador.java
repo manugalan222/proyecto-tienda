@@ -256,4 +256,7 @@ public class VentaControlador {
         stage.show();
     }
 
+    public void onVentaButtonClick(ActionEvent actionEvent) {
+
+    }
 }

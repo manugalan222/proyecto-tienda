@@ -10,43 +10,85 @@
 <?import javafx.scene.layout.Priority?>
 
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.chart.BarChart?>
 <BorderPane prefHeight="480.0" prefWidth="800.0" stylesheets="@estilos.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.galan.proyectotienda2025.PantallaControlador">
 
 
     <left>
+
         <VBox id="barra-lateral" spacing="10.0" prefWidth="300.0" styleClass="sidebar" >
-            <children>
-                <Button text="Inicio" styleClass="menu-btn" maxWidth="Infinity" onAction="#onInicioButtonClick"/>
-                <Button text="Productos" styleClass="menu-btn" maxWidth="Infinity" onAction="#onProductosButtonClick"/>
-                <Button text="Ventas" styleClass="menu-btn" maxWidth="Infinity" onAction="#onVentaButtonClick"/>
-                <Button text="Clientes" styleClass="menu-btn" maxWidth="Infinity" onAction="#onClienteButtonClick"/>
-                <Button text="Inventario" styleClass="menu-btn" maxWidth="Infinity" onAction="#onInventarioButtonClick"/>
-                <Button text="Cuotas" styleClass="menu-btn" maxWidth="Infinity" onAction="#onCuotasButtonClick"/>
-                <Button text="Configuración" styleClass="menu-btn" maxWidth="Infinity" />
-            </children>
+            <HBox alignment="CENTER" styleClass="sidebar-brand">
+                <Text text="MB" styleClass="brand-short"/>
+                <Text text="Distribuciones" styleClass="brand-long"/>
+            </HBox>
+
+            <Button text="🏠 Inicio" styleClass="menu-btn" maxWidth="Infinity"/>
+            <Button text="📦 Productos" styleClass="menu-btn" maxWidth="Infinity" onAction="#onProductosButtonClick"/>
+            <Button text="💰 Ventas" styleClass="menu-btn" maxWidth="Infinity" onAction="#onVentaButtonClick"/>
+            <Button text="👥 Clientes" styleClass="menu-btn" maxWidth="Infinity" onAction="#onClienteButtonClick"/>
+            <Button text="📊 Inventario" styleClass="menu-btn" maxWidth="Infinity" onAction="#onInventarioButtonClick"/>
+            <Button text="💳 Cuotas" styleClass="menu-btn" maxWidth="Infinity" onAction="#onCuotasButtonClick"/>
+            <Button text="⚙️ Configuración" styleClass="menu-btn" maxWidth="Infinity"/>
+
         </VBox>
     </left>
 
     <center>
         <VBox spacing="20.0" styleClass="main-content">
-            <Text text="¡Bienvenido, Nombre!" styleClass="titulo" />
+            <Text fx:id="textoBienvenida" text="¡Bienvenido, Nombre!" styleClass="titulo"/>
 
             <HBox spacing="30" alignment="TOP_LEFT">
+
                 <VBox spacing="10" alignment="CENTER" styleClass="card">
                     <Text text="Ventas Hoy" styleClass="card-title"/>
                     <Text text="125" styleClass="card-value"/>
                 </VBox>
-                <VBox spacing="10" alignment="CENTER" styleClass="card">
-                    <Text text="Productos en Stock" styleClass="card-title"/>
-                    <Text text="345" styleClass="card-value"/>
-                </VBox>
+
                 <VBox spacing="10" alignment="CENTER" styleClass="card">
                     <Text text="Clientes Activos" styleClass="card-title"/>
                     <Text text="87" styleClass="card-value"/>
                 </VBox>
+
+                <VBox spacing="10" alignment="CENTER" styleClass="card">
+                    <Text text="Clientes Activos" styleClass="card-title"/>
+                    <Text text="87" styleClass="card-value"/>
+                </VBox>
+
+                <VBox spacing="10" alignment="CENTER" styleClass="card">
+                    <Text text="Resumen Económico" styleClass="card-title"/>
+                    <Text text="Hoy: $152.350" styleClass="card-value"/>
+                    <Text text="Ventas: 125" styleClass="card-subvalue"/>
+                </VBox>
+
             </HBox>
 
-            <Text text="Últimas ventas" styleClass="subtitulo" />
+            <Text text="Alertas" styleClass="subtitulo" />
+
+            <HBox spacing="30" alignment="TOP_LEFT">
+
+                <VBox spacing="10" alignment="CENTER" styleClass="card">
+                    <Text text="Productos bajo stock" styleClass="card-title"/>
+                    <Text text="125" styleClass="card-value"/>
+                </VBox>
+
+                <VBox spacing="10" alignment="CENTER" styleClass="card">
+                    <Text text="Clientes con pagos pendientes" styleClass="card-title"/>
+                    <Text text="345" styleClass="card-value"/>
+                </VBox>
+
+            </HBox>
+
+
+            <Text text="Rendimiento Semanal" styleClass="subtitulo"/>
+
+            <BarChart fx:id="graficoRendimiento" prefHeight="300.0" prefWidth="600.0">
+                <xAxis>
+                    <CategoryAxis label="Día"/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Ventas"/>
+                </yAxis>
+            </BarChart>
 
         </VBox>
     </center>
